@@ -3,6 +3,10 @@
 >from pylama.layout import *
 >from pylama import amsmath, amssymb
 
+># This is a plan for parser plugins:
+># >from my_plugin import MyPlugin
+># >context.register_parser_plugin(MyPlugin) ># This adds a plugin just for the current context
+
 ># Comments
 ># look like this
 ># They are simply python comments
@@ -34,7 +38,7 @@ Some normal text
 
 ### Subsection: Figures #> How do we write figures? Let's see...
 
->table(1, 3, width="\textwidth") # this is a table, with some content below:
+>table(1, 3, width="\textwidth", label="birdfigure") # this is a table, with some content below:
     >cell(0, 0)
         >centering() #> Just affects the current indentation level
         ># this initializes the context of the figure and by default, a caption:
@@ -49,6 +53,23 @@ Some normal text
     ># >for num, cell in enumerate(context.table.cells):
     ># >   cell.set_label("birdfigure%d" % num)
 
-Here, we cite a reference: >cite("leonard2015") .
+Here, we cite a reference: >cite("leonard2015") and reference a figure >ref("birdfigure").
+
+### Final
+
+># The most important thing: including other pymd files:
+>input("example_input.pymd")
+># But, they can also be plain md files:
+>input("example_input.md")
+># This is equivalent to:
+>escape()
+    >input("example_input.pymd") ># But, without the pymd
+
+## Simple equation:
+
+>equation(label="kolmogorov")
+    >gathered
+    A*A = A^2 \\
+    B*B*B = B^3.
 
 >bibtex.bibliography("main.bib")
