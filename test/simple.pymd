@@ -1,0 +1,54 @@
+>from pylama import context, latex, markdown, bibtex, figure
+>from pylama.common import *
+>from pylama.layout import *
+>from pylama import amsmath, amssymb
+
+># Comments
+># look like this
+># They are simply python comments
+># Let us start our document:
+
+# Title ># Comments can go after text as well
+
+>color('blue') #> If a function is followed by indent, the indentation will be it's context, called "body"
+    This
+    is
+    some really
+    blue
+    text
+
+>color('red') #> If there is no indent after the function, it will have current indentation as its body
+
+Some very, very red text
+
+>color('normal') #> Reset color
+
+Some normal text
+
+## Section
+
+>escape() #> This will allow us to write pure markdown, allowing e.g. citations
+    > Make
+    > love, not
+    > war
+
+### Subsection: Figures #> How do we write figures? Let's see...
+
+>table(1, 3, width="\textwidth") # this is a table, with some content below:
+    >cell(0, 0)
+        >centering() #> Just affects the current indentation level
+        ># this initializes the context of the figure and by default, a caption:
+        >figure(caption="Some lovely red birds", image="birds.jpg", placement="htpb", width="\textwidth")
+    >cell(0, 1)
+        >raggedleft()
+        This is the context of the second column.
+    >cell(0, 2)
+        >raggedright()
+        This is the context of the third column.
+    ># Imagine something like this for the future:
+    ># >for num, cell in enumerate(context.table.cells):
+    ># >   cell.set_label("birdfigure%d" % num)
+
+Here, we cite a reference: >cite("leonard2015") .
+
+>bibtex.bibliography("main.bib")
