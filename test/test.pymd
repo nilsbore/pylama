@@ -1,0 +1,9 @@
+>from pylama.layout import centering
+>from pylama.common import latex, latexblock
+
+>latex("Some latex")
+
+This is a very simple test.
+
+>latexblock("equation")
+    A*A = A^2

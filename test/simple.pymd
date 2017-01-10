@@ -1,4 +1,5 @@
->from pylama import context, latex, markdown, bibtex, figure
+>from pylama import context, latex, markdown, bibtex
+>from pylama.figure import *
 >from pylama.common import *
 >from pylama.layout import *
 >from pylama import amsmath, amssymb
@@ -39,7 +40,7 @@ Some normal text
 ### Subsection: Figures #> How do we write figures? Let's see...
 
 >table(1, 3, width="\textwidth", label="birdfigure") # this is a table, with some content below:
-    >cell(0, 0)
+    >cell(0, 0) ># table.cell(0, 0, context) # if table.cell exists, otherwise cell(0, 0, context)
         >centering() #> Just affects the current indentation level
         ># this initializes the context of the figure and by default, a caption:
         >figure(caption="Some lovely red birds", image="birds.jpg", placement="htpb", width="\textwidth")
@@ -61,9 +62,7 @@ Here, we cite a reference: >cite("leonard2015") and reference a figure >ref("bir
 >input("example_input.pymd")
 ># But, they can also be plain md files:
 >input("example_input.md")
-># This is equivalent to:
->escape()
-    >input("example_input.pymd") ># But, without the pymd
+># This means that we can use pymd just as a structuring and formatting tool
 
 ## Simple equation:
 
