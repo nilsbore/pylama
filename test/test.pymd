@@ -1,9 +1,37 @@
 >from pylama.layout import centering
->from pylama.common import latex, latexblock
+>from pylama.common import latex, latexblock, table, setcell
+
+>latexblock("equation")
+    A*A = A^2
+    >latexblock("equation")
+        >latex("Just trying")
+            tjena
+        >latexblock("equation")
+            >print "Current indent: ", Context.context.indent
+            >print "Parent indent: ", Context.parent.indent
+            >print a
+            B*B = B^2
 
 >latex("Some latex")
 
 This is a very simple test.
+This should also work with multi-line.
 
->latexblock("equation")
-    A*A = A^2
+>table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+    >print cell.shape
+    >print rows
+    >print cols
+    >setcell(0, 0)
+        a
+    >setcell(0, 2)
+        c
+    >setcell(0, 1)
+        b
+    >setcell(1, 0)
+        d
+    >setcell(1, 1)
+        e
+    >setcell(1, 2)
+        f
+    >cell[1, 1].children[0].text = "Tjena"
+    >print cell[0, 0].children[0].text

@@ -8,14 +8,18 @@ from code import InteractiveConsole
 import sys
 
 def run(filename):
-    context = Context(parent=None, func=None, indent=None)
+    context = Context(parent=None, func=None, indent=0)
     with open(filename) as f:
         lines = f.readlines()
         context.parse_buf(lines)
         console = InteractiveConsole()
-        context.evaluate(console)
-    context = console.locals["context"]
-    document = context.document
+        context.print_parse_tree()
+        Context.variables['a'] = 42
+        context.evaluate_children()
+    #print Context.variables
+    context_class = Context.variables["Context"]
+    #print context_class
+    document = context_class.document
     print document
 
 if __name__ == "__main__":
