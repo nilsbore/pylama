@@ -1,19 +1,22 @@
-from pylama import latex
+from pylama.convenience import latex, maybe_caption, randomref
+from pylama.context import Context
 
 latex("\usepackage{graphicx}")
 
-def figure(image, caption=None, label=None, placement="t", width="\textwidth", scale=1.0, context):
-    latex("\begin{figure*}[%s]" % (placement))
+def figure(image, caption=None, label=None, placement="t", scale=1.0):
+    if label is None:
+        label = randomref()
 
-    context.evaluate()
+    latex("\\begin{figure}[%s]" % (placement))
 
-    latex("\begin{subfigure}[%s]{%s} \
-		   \center \
-		   \includegraphics[scale=%f]{%s} \
-	       \end{subfigure}" % (placement, width, scale, image))
+    Context.context.add()
+
+    latex("\includegraphics[scale=%f]{%s}" % (scale, image))
 
     if not caption is None:
         latex("\caption{%s}" % caption)
-    if not label is None:
-        latex("\label{%s}" % label)
-    latex("\end{figure*}")
+
+    latex("\label{%s}" % label)
+    latex("\end{figure}")
+
+    return label
