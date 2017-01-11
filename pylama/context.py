@@ -26,6 +26,7 @@ class Context(object):
 
         nbr = 0
         while nbr < len(lines):
+            #print lines[nbr]
             line = lines[nbr]
             woindent = line.lstrip()
             lineindent = len(line) - len(woindent)
@@ -40,9 +41,12 @@ class Context(object):
                 else:
                     if len(self.children) == 0 or self.children[-1].function is not None:
                         self.children.append(Context(self, text="", indent=lineindent))
-                    print self.children[-1].indent
                     self.children[-1].text += woindent
                     nbr = nbr + 1
+            elif len(woindent) == 0:
+                if len(self.children) > 0 and self.children[-1].function is None:
+                    self.children[-1].text += "\n"
+                nbr = nbr + 1
             else:
                 nbr = nbr + 1
                 print "This all went to hell, returning..."

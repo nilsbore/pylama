@@ -2,8 +2,6 @@
 
 from pylama.context import Context
 
-from code import InteractiveConsole
-
 import sys
 
 def run(infile, outfile):
@@ -11,7 +9,6 @@ def run(infile, outfile):
     with open(infile) as f:
         lines = f.readlines()
         context.parse_buf(lines)
-        console = InteractiveConsole()
         context.print_parse_tree()
         Context.variables['a'] = 42
         context.add()

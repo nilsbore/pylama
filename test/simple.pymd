@@ -1,30 +1,84 @@
 >from pylama.common import documentclass
 >documentclass("article")
->from pylama.common import latexblock, begin_document, end_document, skip, ref
+>from pylama.common import latexblock, begin_document, end_document, comment, ref, section, make_title
 >from pylama.layout import centering, raggedleft, raggedright, center
 >from pylama.convenience import latex
 >from pylama.table import table, setcell
->from pylama.figure import figure, includegraphics
+>from pylama.figure import figure, includegraphics, figuretable, subfigure
+>from pylama.code import code
+
+>title = "Make typesetting great again"
+>author = "Nils Bore"
 
 >begin_document()
+>make_title(title, author)
 
->latexblock("equation")
+>intro = section("Introduction")
+
+># This is a short, one-line comment
+
+>comment()
+    This is a long
+    comment that I
+    want to comment
+    out. That is very
+    simple to do, look
+    at the comment definition
+    inside pylama/common
+
+Now let's just write some normal text,
+note how pieces of text may be split up.
+Now let's just write some normal text,
+note how pieces of text may be split up.
+Now let's just write some normal text,
+note how pieces of text may be split up,
+may be split up
+
+into paragraphs. Just like latex. Just like latex.
+Just like latex. Just like latex. Just like latex. Just like latex.
+Just like latex. Just like latex. Just like latex. Just like latex.
+
+>code(caption = "You declare subsections with respect to the parent section.")
+    >maths = intro.subsection("Maths")
+
+>maths = intro.subsection("Maths")
+
+>code(caption = "An equation can be declared with latexblock or with the equation function")
+    >e1 = latexblock("equation")
+        A*A = A^2
+
+>e1 = latexblock("equation")
     A*A = A^2
-    >skip()
-        >latexblock("equation")
-            >latex("Just trying")
-                tjena
-            >latexblock("equation")
-                >print "Current indent: ", Context.context.indent
-                >print "Parent indent: ", Context.parent.indent
-                >print a
-                B*B = B^2
-                >I = 92
+    >comment()
 
 >latex("Some latex")
 
+>tables = intro.subsection("Tables")
+
 This is a very simple test.
 This should also work with multi-line.
+
+>code(caption = "The tables are indexed by row col in a numpy matrix")
+    >t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+        >print cell.shape
+        >print rows
+        >print cols
+        >centering()
+        >setcell(0, 0)
+            a
+        >setcell(0, 2)
+            c
+        >setcell(0, 1)
+            b
+        >setcell(1, 0)
+            >includegraphics(image="birds.png", scale=0.3)
+        >setcell(1, 1)
+            e
+        >setcell(1, 2)
+            f
+        >cell[1, 1].children[0].text = "Tjena"
+        >print cell[0, 0].children[0].text
+        >print cell[0, 1].parent.indent
 
 >t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
     >print cell.shape
@@ -32,13 +86,10 @@ This should also work with multi-line.
     >print cols
     >centering()
     >setcell(0, 0)
-        >#raggedleft()
         a
     >setcell(0, 2)
-        >#raggedright()
         c
     >setcell(0, 1)
-        >#centering()
         b
     >setcell(1, 0)
         >includegraphics(image="birds.png", scale=0.3)
@@ -47,7 +98,7 @@ This should also work with multi-line.
     >setcell(1, 2)
         f
     >cell[1, 1].children[0].text = "Tjena"
-    >print cell[0, 0].children[1].text
+    >print cell[0, 0].children[0].text
     >print cell[0, 1].parent.indent
 
 >latex("Tableref: %s" % t1)
@@ -55,12 +106,64 @@ This should also work with multi-line.
 Just referencing table 1:
 >ref(t1)
 
+>figures = section("Figures")
+
+code(caption = "Declaring a figure is a oneliner"):
+    >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
+        >center()
 >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
     >center()
 
+>latex("Figureref: %s" % f1)
 Just referencing figure 1:
->#ref(f1)
+>ref(f1)
 
 >#print I
+
+>subfigures = figures.subsection("Subfigures")
+
+>code(caption = "Figuretables are similar to tables with subfigures in the cells")
+    >s1 = figuretable(rows=2, cols=2, caption="Birds mr table")
+        >print cell.shape
+        >print rows
+        >print cols
+        >center()
+        >setcell(0, 0)
+            >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
+                >center()
+        >setcell(1, 0)
+            >subfigure(caption="Birds 2", image="birds.png", scale=0.6)
+                >center()
+        >setcell(0, 1)
+            >subfigure(caption="Birds 3", image="birds.png", scale=0.6)
+                >center()
+        >setcell(1, 1)
+            >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
+                >center()
+>s1 = figuretable(rows=2, cols=2, caption="Birds mr table")
+    >print cell.shape
+    >print rows
+    >print cols
+    >center()
+    >setcell(0, 0)
+        >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
+            >center()
+    >setcell(1, 0)
+        >subfigure(caption="Birds 2", image="birds.png", scale=0.6)
+            >center()
+    >setcell(0, 1)
+        >subfigure(caption="Birds 3", image="birds.png", scale=0.6)
+            >center()
+    >setcell(1, 1)
+        >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
+            >center()
+
+Referencing Equation
+>latex("Eqref: %s" % e1)
+>ref(e1)
+And finally, the figure table, Figure
+>ref(s1)
+and the cell:
+>ref(sf1)
 
 >end_document()
