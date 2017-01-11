@@ -1,9 +1,10 @@
->from pylama.common import latexblock, begin_document, end_document, skip, documentclass, ref
+>from pylama.common import documentclass
 >documentclass("article")
->from pylama.layout import centering, raggedleft, raggedright
+>from pylama.common import latexblock, begin_document, end_document, skip, ref
+>from pylama.layout import centering, raggedleft, raggedright, center
 >from pylama.convenience import latex
 >from pylama.table import table, setcell
->from pylama.figure import figure
+>from pylama.figure import figure, includegraphics
 
 >begin_document()
 
@@ -40,7 +41,7 @@ This should also work with multi-line.
         >#centering()
         b
     >setcell(1, 0)
-        3
+        >includegraphics(image="birds.png", scale=0.3)
     >setcell(1, 1)
         e
     >setcell(1, 2)
@@ -55,6 +56,7 @@ Just referencing table 1:
 >ref(t1)
 
 >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
+    >center()
 
 Just referencing figure 1:
 >#ref(f1)

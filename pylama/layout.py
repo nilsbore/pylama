@@ -8,3 +8,6 @@ def raggedleft():
 
 def centering():
     latex("\centering")
+
+def center():
+    latex("\center")
