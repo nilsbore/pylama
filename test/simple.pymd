@@ -108,7 +108,7 @@ Just referencing table 1:
 
 >figures = section("Figures")
 
-code(caption = "Declaring a figure is a oneliner"):
+>code(caption = "Declaring a figure is a oneliner.")
     >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
         >center()
 >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
