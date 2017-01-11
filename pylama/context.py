@@ -87,7 +87,7 @@ class Context(object):
             #self.parent = Context.variables["__parent__"]
             #self.children = Context.variables["__children__"]
 
-    def evaluate_children(self):
+    def add(self):
         for child in self.children:
             child.evaluate()
 

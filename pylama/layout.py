@@ -1,10 +1,10 @@
 from pylama.common import latex
 
-def raggedright(context):
-    latex("\raggedright")
+def raggedright():
+    latex("\\raggedright")
 
-def raggedleft(context):
-    latex("\raggedleft")
+def raggedleft():
+    latex("\\raggedleft")
 
-def centering(context):
+def centering():
     latex("\centering")

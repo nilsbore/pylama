@@ -1,74 +1,59 @@
->from pylama import context, latex, markdown, bibtex
->from pylama.figure import *
->from pylama.common import *
->from pylama.layout import *
->from pylama import amsmath, amssymb
+>from pylama.layout import centering, raggedleft, raggedright
+>from pylama.common import latex, latexblock, table, setcell, begin_document, end_document, skip, documentclass, ref
+>documentclass("article")
 
-># This is a plan for parser plugins:
-># >from my_plugin import MyPlugin
-># >context.register_parser_plugin(MyPlugin) ># This adds a plugin just for the current context
+>begin_document()
 
-># Comments
-># look like this
-># They are simply python comments
-># Let us start our document:
+>latexblock("equation")
+    A*A = A^2
+    >skip()
+        >latexblock("equation")
+            >latex("Just trying")
+                tjena
+            >latexblock("equation")
+                >print "Current indent: ", Context.context.indent
+                >print "Parent indent: ", Context.parent.indent
+                >print a
+                B*B = B^2
+                >I = 92
 
-# Title ># Comments can go after text as well
+>latex("Some latex")
 
->color('blue') #> If a function is followed by indent, the indentation will be it's context, called "body"
-    This
-    is
-    some really
-    blue
-    text
+This is a very simple test.
+This should also work with multi-line.
 
->color('red') #> If there is no indent after the function, it will have current indentation as its body
+>t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+    >print cell.shape
+    >print rows
+    >print cols
+    >centering()
+    >setcell(0, 0)
+        >#raggedleft()
+        a
+    >setcell(0, 2)
+        >#raggedright()
+        c
+    >setcell(0, 1)
+        >#centering()
+        b
+    >setcell(1, 0)
+        >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb", width="\textwidth")
+    >setcell(1, 1)
+        e
+    >setcell(1, 2)
+        f
+    >cell[1, 1].children[0].text = "Tjena"
+    >print cell[0, 0].children[0].text
+    >print cell[0, 1].parent.indent
 
-Some very, very red text
+>latex("Tableref: %s" % t1)
 
->color('normal') #> Reset color
+Just referencing table 1:
+>ref(t1)
 
-Some normal text
+Just referencing figure 1:
+>ref(f1)
 
-## Section
+>#print I
 
->escape() #> This will allow us to write pure markdown, allowing e.g. citations
-    > Make
-    > love, not
-    > war
-
-### Subsection: Figures #> How do we write figures? Let's see...
-
->table(1, 3, width="\textwidth", label="birdfigure") # this is a table, with some content below:
-    >cell(0, 0) ># table.cell(0, 0, context) # if table.cell exists, otherwise cell(0, 0, context)
-        >centering() #> Just affects the current indentation level
-        ># this initializes the context of the figure and by default, a caption:
-        >figure(caption="Some lovely red birds", image="birds.jpg", placement="htpb", width="\textwidth")
-    >cell(0, 1)
-        >raggedleft()
-        This is the context of the second column.
-    >cell(0, 2)
-        >raggedright()
-        This is the context of the third column.
-    ># Imagine something like this for the future:
-    ># >for num, cell in enumerate(context.table.cells):
-    ># >   cell.set_label("birdfigure%d" % num)
-
-Here, we cite a reference: >cite("leonard2015") and reference a figure >ref("birdfigure").
-
-### Final
-
-># The most important thing: including other pymd files:
->input("example_input.pymd")
-># But, they can also be plain md files:
->input("example_input.md")
-># This means that we can use pymd just as a structuring and formatting tool
-
-## Simple equation:
-
->equation(label="kolmogorov")
-    >gathered
-    A*A = A^2 \\
-    B*B*B = B^3.
-
->bibtex.bibliography("main.bib")
+>end_document()

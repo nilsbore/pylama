@@ -1,31 +1,40 @@
->from pylama.layout import centering
->from pylama.common import latex, latexblock, table, setcell
+>from pylama.layout import centering, raggedleft, raggedright
+>from pylama.common import latex, latexblock, table, setcell, begin_document, end_document, skip, documentclass, ref
+>documentclass("article")
+
+>begin_document()
 
 >latexblock("equation")
     A*A = A^2
-    >latexblock("equation")
-        >latex("Just trying")
-            tjena
+    >skip()
         >latexblock("equation")
-            >print "Current indent: ", Context.context.indent
-            >print "Parent indent: ", Context.parent.indent
-            >print a
-            B*B = B^2
+            >latex("Just trying")
+                tjena
+            >latexblock("equation")
+                >print "Current indent: ", Context.context.indent
+                >print "Parent indent: ", Context.parent.indent
+                >print a
+                B*B = B^2
+                >I = 92
 
 >latex("Some latex")
 
 This is a very simple test.
 This should also work with multi-line.
 
->table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+>t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
     >print cell.shape
     >print rows
     >print cols
+    >centering()
     >setcell(0, 0)
+        >#raggedleft()
         a
     >setcell(0, 2)
+        >#raggedright()
         c
     >setcell(0, 1)
+        >#centering()
         b
     >setcell(1, 0)
         d
@@ -35,3 +44,13 @@ This should also work with multi-line.
         f
     >cell[1, 1].children[0].text = "Tjena"
     >print cell[0, 0].children[0].text
+    >print cell[0, 1].parent.indent
+
+>latex("Tableref: %s" % t1)
+
+Just referencing table 1:
+>ref(t1)
+
+>#print I
+
+>end_document()
