@@ -1,4 +1,4 @@
-from pylama.common import latex
+from pylama.convenience import latex
 
 def raggedright():
     latex("\\raggedright")

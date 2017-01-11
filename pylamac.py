@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-from pylama.common import latex
 from pylama.context import Context
 
 from code import InteractiveConsole

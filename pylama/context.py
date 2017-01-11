@@ -1,15 +1,11 @@
-#from pylama import latex, markdown
-#import markdown
-from code import InteractiveConsole
-
-#context = None
 
 class Context(object):
 
     document = ""
     variables = {}
-    global_variables = {}
     context = None
+    parent = None
+    children = None
 
     def __init__(self, parent, func=None, text=None, indent=0):
         self.parent = parent
@@ -36,7 +32,6 @@ class Context(object):
             if lineindent == childindent:
                 if woindent[0] == '>':
                     self.children.append(Context(self, func=woindent[1:], indent=lineindent))
-                    #child_lines = [i for i in range(nbr+1, len(lines)) if compute_indent(lines[i]) > childindent]
                     upper_nbr = nbr+1
                     while upper_nbr < len(lines) and self.compute_indent(lines[upper_nbr]) > childindent:
                         upper_nbr = upper_nbr+1
@@ -64,15 +59,17 @@ class Context(object):
 
     def evaluate_top(self):
         if self.function is not None:
-            #console.runcode(self.function)
-            Context.variables["__context__"] = self
-            Context.variables["__parent__"] = self.parent
-            Context.variables["__children__"] = self.children
-            #Context.variables["Context"] = Context
-            exec "Context.context = __context__" in Context.variables #, Context.global_variables
-            exec "Context.parent = __parent__" in Context.variables
-            exec "Context.children = __children__" in Context.variables
-            exec self.function in Context.variables #, Context.global_variables
+            #Context.variables["__context__"] = self
+            #Context.variables["__parent__"] = self.parent
+            #Context.variables["__children__"] = self.children
+            #exec "Context.context = __context__" in Context.variables #, Context.global_variables
+            #exec "Context.parent = __parent__" in Context.variables
+            #exec "Context.children = __children__" in Context.variables
+            Context.context = self
+            Context.parent = self.parent
+            Context.children = self.children
+            Context.variables["Context"] = Context
+            exec self.function in Context.variables
 
             #exec "__context__ = Context.context" in Context.variables
             #Context.variables = Context.variables["Context"].variables
@@ -82,8 +79,6 @@ class Context(object):
             #exec "__children__ = Context.children" in Context.variables
 
             #temp = Context.variables["__context__"]
-            #if hasattr(temp, "cell"):
-            #    self.cell = temp.cell
             #self.parent = Context.variables["__parent__"]
             #self.children = Context.variables["__children__"]
 
@@ -91,43 +86,9 @@ class Context(object):
         for child in self.children:
             child.evaluate()
 
-    def set_global_context(self):
-        #global context
-        #context = self
-
-        #console.runcode("global context")
-        #console.runcode("global parent")
-        #console.runcode("global children")
-        #console.locals["__context__"] = self
-        #console.locals["__parent__"] = self.parent
-        #console.locals["__children__"] = self.children
-        #onsole.runcode("context = __context__")
-        #console.runcode("parent = __parent__")
-        #console.runcode("children = __children__")
-        #exec "global context\n" in Context.variables
-        #Context.variables['context'] = self
-        #Context.variables['parent'] = self.parent
-        #Context.variables['children'] = self.children
-        pass
-
-    #def get_global_context(self):
-
     def evaluate(self):
-        #global context, parent, children
-        #context = self
-        #parent = self.parent
-        #children = self.children
-        #console.locals['context'] = self
-        #console.locals['parent'] = self.parent
-        #console.locals['children'] = self.children
 
-        #self.set_global_context()
         if self.parent is not None and self.function is None:
-            #context = console.locals['context']
             Context.document += self.text
-            #console.locals['context'] = context
         else:
-            #context = console.locals['context']
             self.evaluate_top()
-            #for child in self.children:
-            #    child.evaluate()

@@ -1,5 +1,6 @@
 >from pylama.layout import centering, raggedleft, raggedright
->from pylama.common import latex, latexblock, table, setcell, begin_document, end_document, skip, documentclass, ref
+>from pylama.common import latex, latexblock, begin_document, end_document, skip, documentclass, ref
+>from pylama.table import table, setcell
 >documentclass("article")
 
 >begin_document()
@@ -43,7 +44,7 @@ This should also work with multi-line.
     >setcell(1, 2)
         f
     >cell[1, 1].children[0].text = "Tjena"
-    >print cell[0, 0].children[0].text
+    >print cell[0, 0].children[1].text
     >print cell[0, 1].parent.indent
 
 >latex("Tableref: %s" % t1)
