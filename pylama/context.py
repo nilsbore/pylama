@@ -45,7 +45,7 @@ class Context(object):
                     nbr = nbr + 1
             elif len(woindent) == 0:
                 if len(self.children) > 0 and self.children[-1].function is None:
-                    self.children[-1].text += "\n"
+                    pass#self.children[-1].text += "\n"
                 nbr = nbr + 1
             else:
                 nbr = nbr + 1
