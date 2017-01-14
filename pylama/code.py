@@ -6,9 +6,9 @@ latex("\usepackage{listings}")
 def document_context(context, base_indent, document):
     indent_str = " "*(context.indent-base_indent)
     if context.function is not None:
-        document += indent_str + ">" + context.function + "\n"
+        document += indent_str + ">" + context.function
     if context.text is not None:
-        document += indent_str+context.text + "\n"
+        document += indent_str+context.text
     for child in context.children:
         document = document_context(child, base_indent, document)
     return document

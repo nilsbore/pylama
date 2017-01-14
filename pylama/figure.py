@@ -30,9 +30,7 @@ def figuretable(rows, cols, placement="t", label=None, caption=None):
     if label is None:
         label = randomref()
 
-    Context.variables['cell'] = np.array([[Context(parent=Context.context, indent=Context.context.indent+4) for c in range(0, cols)] for r in range(0, rows)], dtype=Context)
-    Context.variables['rows'] = rows
-    Context.variables['cols'] = cols
+    Context.variables['cell'] = np.array([[Context(myparent=Context.context, indent=Context.context.indent+4) for c in range(0, cols)] for r in range(0, rows)], dtype=Context)
 
     latex("\\begin{figure*}[%s]" % (placement))
 

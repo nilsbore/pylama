@@ -3,6 +3,9 @@
 from pylama.context import Context
 from pylama.convenience import latex, randomref
 
+def add():
+    Context.context.add()
+
 def make_title(title, author):
     latex("\\title{%s}" % title)
     latex("\\author{%s}" % author)

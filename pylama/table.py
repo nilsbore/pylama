@@ -7,9 +7,9 @@ def table(rows, cols, width="\textwidth", placement="t", caption=None, label=Non
     if label is None:
         label = randomref()
 
-    Context.variables['cell'] = np.array([[Context(parent=Context.context, indent=Context.context.indent+4) for c in range(0, cols)] for r in range(0, rows)], dtype=Context)
-    Context.variables['rows'] = rows
-    Context.variables['cols'] = cols
+    Context.variables['cell'] = np.array([[Context(myparent=Context.context, indent=Context.context.indent+4) for c in range(0, cols)] for r in range(0, rows)], dtype=Context)
+    #Context.variables['rows'] = rows
+    #Context.variables['cols'] = cols
 
     latex("\\begin{table*}[%s]" % placement)
     Context.context.add()
