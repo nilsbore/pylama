@@ -22,6 +22,8 @@ def table(rows, cols, width="\textwidth", placement="t", caption=None, label=Non
     latex("\hline")
     for r in range(0, rows):
         for c in range(0, cols):
+            Context.variables['r'] = r
+            Context.variables['c'] = c
             Context.variables['cell'][r, c].add()
             if c < cols-1:
                 latexl("&")

@@ -1,6 +1,6 @@
 >from pylama.common import documentclass
 >documentclass("article")
->from pylama.common import latexblock, begin_document, end_document, comment, ref, section, make_title
+>from pylama.common import latexblock, begin_document, end_document, comment, ref, section, make_title, add
 >from pylama.layout import centering, raggedleft, raggedright, center
 >from pylama.convenience import latex
 >from pylama.table import table, setcell
@@ -47,9 +47,15 @@ Just like latex. Just like latex. Just like latex. Just like latex.
     >e1 = latexblock("equation")
         A*A = A^2
 
+>for i in range(0,5):
+>    add()
+    >latex("Tjena %d!" % i)
+
+
 >e1 = latexblock("equation")
+    >#stuff
     A*A = A^2
-    >comment()
+    B = B
 
 >latex("Some latex")
 
@@ -106,6 +112,33 @@ This should also work with multi-line.
 Just referencing table 1:
 >ref(t1)
 
+>table_contents = [["Observations: ", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
+>                  ["Sea", 2, 10, 1, 3, 4],\
+>                  ["Park", 4, 2, 6, 8, 0],\
+>                  ["Cliff", 2, 4, 1, 0, 2]]
+>table(rows=4, cols=6, width="\textwidth", caption="Birds mr")
+    >print cell.shape
+    >centering()
+
+    >for r in range(0, rows):
+    >    for c in range(0, cols):
+    >        setcell(r=r, c=c)
+        >latex(str(table_contents[r][c]))
+
+>code()
+    >table_contents = [["Observations: ", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
+    >                  ["Sea", 2, 10, 1, 3, 4],\
+    >                  ["Park", 4, 2, 6, 8, 0],\
+    >                  ["Cliff", 2, 4, 1, 0, 2]]
+    >table(rows=4, cols=6, width="\textwidth", caption="Birds mr")
+        >print cell.shape
+        >centering()
+
+        >for r in range(0, rows):
+        >    for c in range(0, cols):
+        >        setcell(r=r, c=c)
+            >latex(str(table_contents[r][c]))
+
 >figures = section("Figures")
 
 >code(caption = "Declaring a figure is a oneliner.")
@@ -140,10 +173,14 @@ Just referencing figure 1:
         >setcell(1, 1)
             >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
                 >center()
+
+>caption="Hej!"
+
 >s1 = figuretable(rows=2, cols=2, caption="Birds mr table")
     >print cell.shape
     >print rows
     >print cols
+    >print caption
     >center()
     >setcell(0, 0)
         >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
@@ -157,6 +194,8 @@ Just referencing figure 1:
     >setcell(1, 1)
         >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
             >center()
+
+>print caption
 
 Referencing Equation
 >latex("Eqref: %s" % e1)

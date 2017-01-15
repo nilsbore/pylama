@@ -25,12 +25,12 @@ class Context(object):
         woindent = line.lstrip()
         print woindent
         if len(line)-len(woindent) != indent:
-            print line
-            print woindent
-            print "Not same length!"
+            #print line
+            #print woindent
+            #print "Not same length!"
             return ""
         if len(woindent) == 0 or woindent[0] != '>':
-            print "Not good!"
+            #print "Not good!"
             return ""
         return woindent[1:]
 
@@ -42,10 +42,10 @@ class Context(object):
 
         #print childindent
 
-        print "=================="
-        for line in lines:
-            print line.rstrip()
-        print "=================="
+        #print "=================="
+        #for line in lines:
+        #    print line.rstrip()
+        #print "=================="
 
         nbr = 0
         nbr_breaks = 0
@@ -62,12 +62,12 @@ class Context(object):
                     nbr_breaks = 0
                     self.children.append(Context(self, func=woindent[1:], indent=lineindent))
                     # <THIS PART IS NEW!>
-                    print "Current line: " + line
+                    #print "Current line: " + line
                     #print "Next line: " + lines[nbr+1]
                     while nbr+1 < len(lines):
-                        print "Inside"
+                        #print "Inside"
                         body = self.get_function_body(lines[nbr+1], childindent)
-                        print "Body: " + body
+                        #print "Body: " + body
                         #print line, body
                         #print body
                         if len(body) == 0:
@@ -131,6 +131,10 @@ class Context(object):
             #for ind, child in enumerate(self.children):
             #    bkp_children[ind].children = child.children
 
+            context_bkp = Context.context
+            parent_bkp = Context.parent
+            children_bkp = Context.children
+
             #if Context.context != self:
             Context.context = self
             Context.parent = self.parent #Context(self.parent)
@@ -146,8 +150,16 @@ class Context(object):
                 for kw in call.body[0].value.keywords:
                     if kw.arg in Context.variables:
                         restore[kw.arg] = Context.variables[kw.arg]
-                    keywords[kw.arg] = ast.literal_eval(kw.value)
-                    Context.variables[kw.arg] = ast.literal_eval(kw.value)
+                    if isinstance(kw.value, ast.Name):
+                        if kw.value.id in Context.variables:
+                            value = Context.variables[kw.value.id]
+                        else:
+                            value = None
+                    else:
+                        value = ast.literal_eval(kw.value)
+                    if value is not None:
+                        keywords[kw.arg] = value
+                        Context.variables[kw.arg] = value
 
             Context.variables["Context"] = Context
             #print call
@@ -159,6 +171,10 @@ class Context(object):
 
             for k,v in restore.items():
                 Context.variables[k] = v
+
+            Context.context = context_bkp
+            Context.parent = parent_bkp
+            Context.children = children_bkp
             #self.parent = bkp_parent
             #self.children = bkp_children
 
@@ -174,6 +190,8 @@ class Context(object):
             #temp = Context.variables["__context__"]
             #self.parent = Context.variables["__parent__"]
             #self.children = Context.variables["__children__"]
+        else:
+            print "Self.function is none!"
 
     def add(self):
         for child in self.children:
