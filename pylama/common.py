@@ -40,6 +40,16 @@ def end_document():
 def equation(full_width=False, label=None):
     return latexblock("equation", full_width, label)
 
+def itemize():
+    return latexblock("itemize", full_width=False)
+
+def enumerate():
+    return latexblock("enumerate", full_width=False)
+
+def item():
+    latex("\item")
+    Context.context.add()
+
 def cite(ref):
     latex("\cite{%s}" % ref)
 

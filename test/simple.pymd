@@ -1,6 +1,6 @@
 >from pylama.common import documentclass
 >documentclass("article")
->from pylama.common import latexblock, begin_document, end_document, comment, ref, section, make_title, add
+>from pylama.common import *
 >from pylama.layout import centering, raggedleft, raggedright, center
 >from pylama.convenience import latex
 >from pylama.table import table, setcell
@@ -56,6 +56,21 @@ Just like latex. Just like latex. Just like latex. Just like latex.
     >#stuff
     A*A = A^2
     B = B
+
+>itemize()
+    >for i in range(0,5):
+    >    add()
+        >item()
+            Item:
+            >latex(str(i))
+
+>enumerate()
+    >item()
+        Item 1!
+    >item()
+        Item 2!
+    >item()
+        Item 3!
 
 >latex("Some latex")
 
@@ -123,6 +138,8 @@ Just referencing table 1:
     >for r in range(0, rows):
     >    for c in range(0, cols):
     >        setcell(r=r, c=c)
+        Obs:
+        >includegraphics(image="birds.png", scale=0.04)
         >latex(str(table_contents[r][c]))
 
 >code()
@@ -137,6 +154,7 @@ Just referencing table 1:
         >for r in range(0, rows):
         >    for c in range(0, cols):
         >        setcell(r=r, c=c)
+            Obs:
             >latex(str(table_contents[r][c]))
 
 >figures = section("Figures")
