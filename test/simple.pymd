@@ -1,5 +1,5 @@
 >from pylama.common import documentclass
->documentclass("article")
+>documentclass("proc")
 >from pylama.common import *
 >from pylama.layout import centering, raggedleft, raggedright, center
 >from pylama.convenience import latex
@@ -54,7 +54,7 @@ Just like latex. Just like latex. Just like latex. Just like latex.
 
 >e1 = latexblock("equation")
     >#stuff
-    A*A = A^2
+    A*A = A^2 \\
     B = B
 
 >itemize()
@@ -221,5 +221,15 @@ And finally, the figure table, Figure
 >ref(s1)
 and the cell:
 >ref(sf1)
+
+>inputs = section("Combining files")
+
+>code(caption = ".pymd files can be included in each other using the input command.")
+    >input("test/input.pymd")
+
+>code(caption = "This is the content of the test/input.pymd file")
+    This was written in another file!
+
+>input("test/input.pymd")
 
 >end_document()

@@ -6,7 +6,7 @@ latex("\usepackage{listings}")
 def document_context(context, base_indent, document):
     indent_str = " "*(context.indent-base_indent)
     if context.function is not None:
-        document += indent_str + ">" + context.function
+        document += indent_str + ">" + context.function.rstrip().replace("\n", "\n"+indent_str+">") + "\n"
     if context.text is not None:
         document += indent_str+context.text
     for child in context.children:
@@ -19,7 +19,7 @@ def code(caption=None, label=None):
     document = ""
     for child in Context.children:
         document = document_context(child, child.indent, document)
-    latexl("\\begin{lstlisting}[label=%s, captionpos=b" % label)
+    latexl("\\begin{lstlisting}[label=%s, captionpos=b, breaklines=true, basicstyle=\scriptsize" % label)
     if caption is not None:
         latexl(", caption=%s" % caption)
     latex("]")

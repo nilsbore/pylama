@@ -53,6 +53,13 @@ def item():
 def cite(ref):
     latex("\cite{%s}" % ref)
 
+def input(infile):
+    indent = Context.context.indent+4
+    with open(infile) as f:
+        lines = [" "*indent+line for line in f.readlines()]
+        Context.context.parse_buf(lines)
+        Context.context.add()
+
 class section(object):
 
     def __init__(self, name, nesting=0):

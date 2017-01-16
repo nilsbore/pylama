@@ -9,10 +9,10 @@ def run(infile, outfile):
     with open(infile) as f:
         lines = f.readlines()
         context.parse_buf(lines)
-        context.print_parse_tree()
+        #context.print_parse_tree()
         Context.variables['a'] = 42
         context.add()
-        #context.print_parse_tree()
+        context.print_parse_tree()
     #print Context.variables
     context_class = Context.variables["Context"]
     #print context_class
