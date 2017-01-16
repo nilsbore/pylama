@@ -16,7 +16,9 @@ class Context(object):
         self.function = func
         self.text = text
         self.indent = indent
-        exec "from pylama.context import Context" in Context.variables
+        # Is this really needed every time we instantiate a new Context?
+        # Doesn't seem like it...
+        # exec "from pylama.context import Context" in Context.variables
 
     def compute_indent(self, line):
         return len(line) - len(line.lstrip())
@@ -25,12 +27,8 @@ class Context(object):
         woindent = line.lstrip()
         print woindent
         if len(line)-len(woindent) != indent:
-            #print line
-            #print woindent
-            #print "Not same length!"
             return ""
         if len(woindent) == 0 or woindent[0] != '>':
-            #print "Not good!"
             return ""
         return woindent[1:]
 
@@ -40,41 +38,24 @@ class Context(object):
         else:
             childindent = self.indent + 4
 
-        #print childindent
-
-        #print "=================="
-        #for line in lines:
-        #    print line.rstrip()
-        #print "=================="
-
         nbr = 0
         nbr_breaks = 0
         while nbr < len(lines):
-            #print lines[nbr]
             line = lines[nbr]
             woindent = line.lstrip()
             lineindent = len(line) - len(woindent)
             if lineindent == childindent:
                 if woindent[0] == '>':
-                    #print line
-                    #print lineindent
-                    #print childindent
                     nbr_breaks = 0
                     self.children.append(Context(self, func=woindent[1:], indent=lineindent))
-                    # <THIS PART IS NEW!>
-                    #print "Current line: " + line
-                    #print "Next line: " + lines[nbr+1]
+
                     while nbr+1 < len(lines):
-                        #print "Inside"
                         body = self.get_function_body(lines[nbr+1], childindent)
-                        #print "Body: " + body
-                        #print line, body
-                        #print body
                         if len(body) == 0:
                             break
                         self.children[-1].function += body
                         nbr += 1
-                    # </THIS PART IS NEW!>
+
                     upper_nbr = nbr+1
                     while upper_nbr < len(lines) and self.compute_indent(lines[upper_nbr]) > childindent:
                         upper_nbr = upper_nbr+1
@@ -90,7 +71,7 @@ class Context(object):
                     nbr_breaks = 0
             elif len(woindent) == 0:
                 if len(self.children) > 0 and self.children[-1].function is None:
-                    nbr_breaks += 1 #self.children[-1].text += "\n"
+                    nbr_breaks += 1
                 nbr = nbr + 1
             else:
                 nbr_breaks = 0
@@ -116,29 +97,13 @@ class Context(object):
 
     def evaluate_top(self):
         if self.function is not None:
-            #Context.variables["__context__"] = self
-            #Context.variables["__parent__"] = self.parent
-            #Context.variables["__children__"] = self.children
-            #exec "Context.context = __context__" in Context.variables #, Context.global_variables
-            #exec "Context.parent = __parent__" in Context.variables
-            #exec "Context.children = __children__" in Context.variables
-            #Context.context = None
-            #Context.parent = None
-            #Context.children = None
-            #bkp_parent = Context(self.parent)
-
-            #bkp_children = [Context(child.parent, child.function, child.text, child.indent) for child in self.children]
-            #for ind, child in enumerate(self.children):
-            #    bkp_children[ind].children = child.children
-
             context_bkp = Context.context
             parent_bkp = Context.parent
             children_bkp = Context.children
 
-            #if Context.context != self:
             Context.context = self
-            Context.parent = self.parent #Context(self.parent)
-            Context.children = self.children #[Context(child) for child in self.children]
+            Context.parent = self.parent
+            Context.children = self.children
 
             keywords = {}
             restore = {}
@@ -162,7 +127,6 @@ class Context(object):
                         Context.variables[kw.arg] = value
 
             Context.variables["Context"] = Context
-            #print call
 
             exec self.function in Context.variables
 
@@ -175,21 +139,6 @@ class Context(object):
             Context.context = context_bkp
             Context.parent = parent_bkp
             Context.children = children_bkp
-            #self.parent = bkp_parent
-            #self.children = bkp_children
-
-            #locals()["Context"] = Context.variables["Context"]
-
-            #exec "__context__ = Context.context" in Context.variables
-            #Context.variables = Context.variables["Context"].variables
-
-            #exec "__context__ = Context.context" in Context.variables #, Context.global_variables
-            #exec "__parent__ = Context.parent" in Context.variables
-            #exec "__children__ = Context.children" in Context.variables
-
-            #temp = Context.variables["__context__"]
-            #self.parent = Context.variables["__parent__"]
-            #self.children = Context.variables["__children__"]
         else:
             print "Self.function is none!"
 

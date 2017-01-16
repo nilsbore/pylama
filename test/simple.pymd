@@ -59,10 +59,9 @@ Just like latex. Just like latex. Just like latex. Just like latex.
 
 >itemize()
     >for i in range(0,5):
-    >    add()
-        >item()
-            Item:
-            >latex(str(i))
+    >    item()
+        Item:
+        >latex(str(i))
 
 >enumerate()
     >item()
