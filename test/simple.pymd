@@ -6,6 +6,7 @@
 >from pylama.table import table, setcell
 >from pylama.figure import figure, includegraphics, figuretable, subfigure
 >from pylama.code import code
+>from pylama.hyperref import url
 
 >title = "Make typesetting great again"
 >author = "Nils Bore"
@@ -78,8 +79,18 @@ Just like latex. Just like latex. Just like latex. Just like latex.
 This is a very simple test.
 This should also work with multi-line.
 
+># A scope provides two methods, .string() and .add()
+># String simply removes the generated latex text as a string
+># while add inserts the content in the main latex document
+>s = scope()
+    The table showcases how to assign table cells by indices and
+    how you can include contexts within each others. The image
+    showcased in all figures is created by BanzaiTokyo,
+    >url("http://www.iconarchive.com/show/ugly-birds-icons-by-banzaitokyo/angor-icon.html")
+    .
+
 >code(caption = "The tables are indexed by row col in a numpy matrix")
-    >t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+    >t1 = table(rows=2, cols=3, width="\textwidth")
         >print cell.shape
         >print rows
         >print cols
@@ -100,7 +111,10 @@ This should also work with multi-line.
         >print cell[0, 0].children[0].text
         >print cell[0, 1].parent.indent
 
->t1 = table(rows=2, cols=3, width="\textwidth", caption="Birds mr")
+>ss = s.string()
+>print ss
+
+>t1 = table(rows=2, cols=3, width="\textwidth", caption=ss)
     >print cell.shape
     >print rows
     >print cols
@@ -235,11 +249,11 @@ The following code cites a reference and adds a bibliography file to
 the document:
 
 >code()
-    >cite("ranganath2014black")
+    >cite("knuth1979tex")
     >add_bibliography("main", "ieeetr")
 
 This results in the reference
->cite("ranganath2014black")
+>cite("knuth1979tex")
 and a bibliography at the end of the document.
 >add_bibliography("main", "ieeetr")
 

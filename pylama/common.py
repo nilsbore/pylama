@@ -74,6 +74,30 @@ class section(object):
     def subsection(self, name):
         return section(name, self.nesting+1)
 
+class scope(object):
+
+    def __init__(self):
+
+        self.context = Context.context
+
+    def add(self):
+
+        self.context.add()
+
+    # using this hierarchically might cause some troubles
+    # but one layer should be fine
+    def string(self):
+
+        document_bkp = Context.document
+        Context.document = ""
+        self.context.add()
+
+        string_bkp = Context.document
+        Context.document = document_bkp
+
+        return string_bkp
+
+
 # def input(f, context):
 #     if os.path(f).ext() == "pymd":
 #         open f as b:

@@ -23,5 +23,5 @@ def code(caption=None, label=None):
     if caption is not None:
         latexl(", caption=%s" % caption)
     latex("]")
-    latex(document)
+    latexl(document)
     latex("\end{lstlisting}")
