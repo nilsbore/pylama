@@ -5,10 +5,10 @@
 >from pylama.convenience import latex
 >from pylama.table import table, setcell
 >from pylama.figure import figure, includegraphics, figuretable, subfigure
->from pylama.code import code
+>from pylama.code import code, verbatim
 >from pylama.hyperref import url
 
->title = "Make typesetting great again"
+>title = "pylama: Make typesetting great again"
 >author = "Nils Bore"
 
 >begin_document()
@@ -20,57 +20,91 @@
 
 >comment()
     This is a long
-    comment that I
-    want to comment
-    out. That is very
-    simple to do, look
-    at the comment definition
-    inside pylama/common
+    comment with
+    several lines.
 
-Now let's just write some normal text,
-note how pieces of text may be split up.
-Now let's just write some normal text,
-note how pieces of text may be split up.
-Now let's just write some normal text,
-note how pieces of text may be split up,
-may be split up
+Pylama can be best described as a wrapper around the
+>verbatim("LaTeX")
+typesetting system. It attempts to provide a cleaner syntax for your
+standard document while still allowing you to add latex inline when needed.
+The pylama language is built on top of the Python interpreter and,
+as opposed to
+>verbatim("LaTeX")
+the language is inspired by Python's indentation based grouping of code and text.
+To execute code within your pylama document, you start the line with a
+>verbatim(">")
+, similar to command prompts like bash. Use one or multiple lines depending
+on the complexity of the task, all python code and libraries can be imported
+and used.
 
-into paragraphs. Just like latex. Just like latex.
-Just like latex. Just like latex. Just like latex. Just like latex.
-Just like latex. Just like latex. Just like latex. Just like latex.
+To start out your document, you typically type something like
+>code()
+    >from pylama.common import *
+    >documentclass("proc")
+. With this done, you can start building your document. Variables in
+the document are stored in a global context, so if you want to provide the
+environment with the basics and start out your document, you can type:
+>code()
+    >title = "pylama: Make typesetting great again"
+    >author = "Nils Bore"
 
->code(caption = "You declare subsections with respect to the parent section.")
+    >begin_document()
+    >make_title(title, author)
+You declare subsections with respect to the parent section, avoiding
+having to type "sub" too many times and helping you keep track of the hierarchy.
+>code()
     >maths = intro.subsection("Maths")
+Too get more familiar with the language, let's look at how we can use pylama for maths.
 
 >maths = intro.subsection("Maths")
 
->code(caption = "An equation can be declared with latexblock or with the equation function")
-    >e1 = latexblock("equation")
+Equations, like
+>equation1 = equation()
+    A*A = A^2
+can be declared with the following syntax:
+>code()
+    >equation1 = equation()
         A*A = A^2
+Note the
+>verbatim("equation1")
+assignment preceding the equation declaration. This gives us a handle
+that we can use to reference the equation later in the document using
+the syntax
+>verbatim(">ref(equation1)")
+with the result
+>ref(equation1)
+. This has the great advantage that we can actually check if the variable
+is present in the current context and throw and error if that is not the case.
+In latex this would quietly fail with a question mark in the final document.
 
->for i in range(0,5):
->    add()
-    >latex("Tjena %d!" % i)
+The other important thing to note is that there is an indent before
+the actual equation text. This declares that the text is a child of
+the
+>verbatim("equation()")
+declaration. The equation environment takes care of processing the
+formula into text that can be inserted into the final
+>verbatim("LaTeX")
+document. The indentation based syntax is a cornerstone of the pylama
+language and allows these so called contexts to be nested arbitrarily deep.
+The next section delves deeper into contexts.
 
+>items = intro.subsection("Items and Scopes")
 
->e1 = latexblock("equation")
-    >#stuff
-    A*A = A^2 \\
-    B = B
+>comment()
+    >itemize()
+        >for i in range(0,5):
+        >    item()
+            Item:
+            >latex(str(i))
 
->itemize()
-    >for i in range(0,5):
-    >    item()
-        Item:
-        >latex(str(i))
-
->enumerate()
-    >item()
-        Item 1!
-    >item()
-        Item 2!
-    >item()
-        Item 3!
+>code(caption="Items need to be organized by indentation to be properly parsed.")
+    >itemize()
+        >item()
+            Item 1!
+        >item()
+            Item 2!
+        >item()
+            Item 3!
 
 >latex("Some latex")
 
@@ -82,15 +116,17 @@ This should also work with multi-line.
 ># A scope provides two methods, .string() and .add()
 ># String simply removes the generated latex text as a string
 ># while add inserts the content in the main latex document
->s = scope()
+>table_caption_1 = scope()
     The table showcases how to assign table cells by indices and
     how you can include contexts within each others. The image
     showcased in all figures is created by BanzaiTokyo,
     >url("http://www.iconarchive.com/show/ugly-birds-icons-by-banzaitokyo/angor-icon.html")
-    .
+    . See table example Listing
+    >ref(table_example_1)
+    for code.
 
->code(caption = "The tables are indexed by row col in a numpy matrix")
-    >t1 = table(rows=2, cols=3, width="\textwidth")
+>table_example_1 = code(caption = "The tables are indexed by row col in a numpy matrix")
+    >t1 = table(rows=2, cols=3, caption="A table.")
         >print cell.shape
         >print rows
         >print cols
@@ -111,8 +147,7 @@ This should also work with multi-line.
         >print cell[0, 0].children[0].text
         >print cell[0, 1].parent.indent
 
->ss = s.string()
->print ss
+>ss = table_caption_1.string()
 
 >t1 = table(rows=2, cols=3, width="\textwidth", caption=ss)
     >print cell.shape
@@ -140,11 +175,32 @@ This should also work with multi-line.
 Just referencing table 1:
 >ref(t1)
 
->table_contents = [["Observations: ", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
+>table_example_2 = code(caption="Python and pylama interoperation.")
+    >table_contents = [["(Observations)", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
+    >                  ["Sea", 2, 10, 1, 3, 4],\
+    >                  ["Park", 4, 2, 6, 8, 0],\
+    >                  ["Cliff", 2, 4, 1, 0, 2]]
+    >table(rows=4, cols=6, width="\textwidth", caption="Bird locations.")
+        >print cell.shape
+        >centering()
+        >for r in range(0, rows):
+        >    for c in range(0, cols):
+        >        setcell(r=r, c=c)
+            Obs:
+            >latex(str(table_contents[r][c]))
+
+>table_caption_2 = scope()
+    This example showcases how you can define a table in python and directly import it into pylama.
+    For the code generating this table, look at Listing
+    >ref(table_example_2)
+    .
+>ss = table_caption_2.string()
+
+>table_contents = [["(Observations)", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
 >                  ["Sea", 2, 10, 1, 3, 4],\
 >                  ["Park", 4, 2, 6, 8, 0],\
 >                  ["Cliff", 2, 4, 1, 0, 2]]
->table(rows=4, cols=6, width="\textwidth", caption="Birds mr")
+>table(rows=4, cols=6, width="\textwidth", caption=ss)
     >print cell.shape
     >centering()
 
@@ -153,20 +209,6 @@ Just referencing table 1:
     >        setcell(r=r, c=c)
         Obs:
         >latex(str(table_contents[r][c]))
-
->code()
-    >table_contents = [["Observations: ", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
-    >                  ["Sea", 2, 10, 1, 3, 4],\
-    >                  ["Park", 4, 2, 6, 8, 0],\
-    >                  ["Cliff", 2, 4, 1, 0, 2]]
-    >table(rows=4, cols=6, width="\textwidth", caption="Birds mr")
-        >print cell.shape
-        >centering()
-        >for r in range(0, rows):
-        >    for c in range(0, cols):
-        >        setcell(r=r, c=c)
-            Obs:
-            >latex(str(table_contents[r][c]))
 
 >figures = section("Figures")
 
@@ -226,8 +268,8 @@ Just referencing figure 1:
 >print caption
 
 Referencing Equation
->latex("Eqref: %s" % e1)
->ref(e1)
+>latex("Eqref: %s" % equation1)
+>ref(equation1)
 And finally, the figure table, Figure
 >ref(s1)
 and the cell:

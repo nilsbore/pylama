@@ -25,3 +25,7 @@ def code(caption=None, label=None):
     latex("]")
     latexl(document)
     latex("\end{lstlisting}")
+    return label
+
+def verbatim(code_string):
+    latex("\\texttt{%s}" % code_string)
