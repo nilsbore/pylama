@@ -50,6 +50,10 @@ def item():
     latex("\item")
     Context.context.add()
 
+def add_bibliography(bibfile, bibstyle):
+    latex("\\bibliography{%s}" % bibfile)
+    latex("\\bibliographystyle{%s}" % bibstyle)
+
 def cite(ref):
     latex("\cite{%s}" % ref)
 

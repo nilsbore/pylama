@@ -138,7 +138,6 @@ Just referencing table 1:
     >    for c in range(0, cols):
     >        setcell(r=r, c=c)
         Obs:
-        >includegraphics(image="birds.png", scale=0.04)
         >latex(str(table_contents[r][c]))
 
 >code()
@@ -149,7 +148,6 @@ Just referencing table 1:
     >table(rows=4, cols=6, width="\textwidth", caption="Birds mr")
         >print cell.shape
         >centering()
-
         >for r in range(0, rows):
         >    for c in range(0, cols):
         >        setcell(r=r, c=c)
@@ -161,7 +159,7 @@ Just referencing table 1:
 >code(caption = "Declaring a figure is a oneliner.")
     >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
         >center()
->f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
+>f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb", scale=0.6)
     >center()
 
 >latex("Figureref: %s" % f1)
@@ -173,7 +171,7 @@ Just referencing figure 1:
 >subfigures = figures.subsection("Subfigures")
 
 >code(caption = "Figuretables are similar to tables with subfigures in the cells")
-    >s1 = figuretable(rows=2, cols=2, caption="Birds mr table")
+    >s1 = figuretable(rows=1, cols=4, caption="Birds mr table")
         >print cell.shape
         >print rows
         >print cols
@@ -181,35 +179,34 @@ Just referencing figure 1:
         >setcell(0, 0)
             >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
                 >center()
-        >setcell(1, 0)
+        >setcell(0, 1)
             >subfigure(caption="Birds 2", image="birds.png", scale=0.6)
                 >center()
-        >setcell(0, 1)
+        >setcell(0, 2)
             >subfigure(caption="Birds 3", image="birds.png", scale=0.6)
                 >center()
-        >setcell(1, 1)
+        >setcell(0, 3)
             >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
                 >center()
 
 >caption="Hej!"
 
->s1 = figuretable(rows=2, cols=2, caption="Birds mr table")
+>s1 = figuretable(rows=1, cols=4, caption="Birds mr table")
     >print cell.shape
     >print rows
     >print cols
-    >print caption
     >center()
     >setcell(0, 0)
-        >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
-            >center()
-    >setcell(1, 0)
-        >subfigure(caption="Birds 2", image="birds.png", scale=0.6)
+        >subfigure(caption="Birds 1", image="birds.png", scale=0.4)
             >center()
     >setcell(0, 1)
-        >subfigure(caption="Birds 3", image="birds.png", scale=0.6)
+        >subfigure(caption="Birds 2", image="birds.png", scale=0.4)
             >center()
-    >setcell(1, 1)
-        >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
+    >setcell(0, 2)
+        >subfigure(caption="Birds 3", image="birds.png", scale=0.4)
+            >center()
+    >setcell(0, 3)
+        >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.4)
             >center()
 
 >print caption
@@ -231,5 +228,19 @@ and the cell:
     This was written in another file!
 
 >input("test/input.pymd")
+
+>references = section("References")
+
+The following code cites a reference and adds a bibliography file to
+the document:
+
+>code()
+    >cite("ranganath2014black")
+    >add_bibliography("main", "ieeetr")
+
+This results in the reference
+>cite("ranganath2014black")
+and a bibliography at the end of the document.
+>add_bibliography("main", "ieeetr")
 
 >end_document()
