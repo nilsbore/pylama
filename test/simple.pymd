@@ -286,7 +286,8 @@ And finally, the figure table, Figure
 and the cell:
 >ref(sf1)
 
->lazys = section("Lazy blocks")
+>details = section("Details")
+>lazys = details.subsection("Lazy blocks")
 
 Pylama is designed to make the common things easy while making the hard
 things possible. In that spirit, e.g. captions of figures and tables are
@@ -309,6 +310,20 @@ with the block evaluated as text, which you can then provide as the
 caption argument to a figure, table, or other block function.
 Several of the more complex captions in the examples of this document
 were generated in this way.
+
+>contexts = details.subsection("Extending through Contexts")
+
+Inside each block you have access to a variety of introspection details.
+Below are some examples of what you can access for example inside an equation block.
+>code()
+    >equation()
+        A + A = 2A
+        ># prints "4", the current indent level:
+        >print Context.context.indent
+        ># prints "A + A = 2A", the first child:
+        >print Context.parent.children[0].text
+        ># prints "0" as this block has no children:
+        >print len(Context.children)
 
 >inputs = section("Combining files")
 
