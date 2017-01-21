@@ -144,14 +144,14 @@ Notice how we can use them in the table definition to display the size of the ta
         >centering()
         >setcell(0, 0)
             Figure:
-        >setcell(0, 1)
-            Rows:
-        >setcell(0, 2)
-            Columns:
         >setcell(1, 0)
             >includegraphics(image="birds.png", scale=0.3)
+        >setcell(0, 1)
+            Rows:
         >setcell(1, 1)
             >text(rows)
+        >setcell(0, 2)
+            Columns:
         >setcell(1, 2)
             >text(cols)
 ># A lazy provides two methods, .string() and .add()
@@ -171,14 +171,14 @@ Notice how we can use them in the table definition to display the size of the ta
     >centering()
     >setcell(0, 0)
         Figure:
-    >setcell(0, 1)
-        Rows:
-    >setcell(0, 2)
-        Columns:
     >setcell(1, 0)
         >includegraphics(image="birds.png", scale=0.3)
+    >setcell(0, 1)
+        Rows:
     >setcell(1, 1)
         >text(rows)
+    >setcell(0, 2)
+        Columns:
     >setcell(1, 2)
         >text(cols)
 The result can be viewed in Table
@@ -221,70 +221,82 @@ The resulting table is shown in Table
 >ref(table_2)
 .
 
->figures = section("Figures")
+>figures = section("Figures and References")
 
+Figures are defined in a way to let the most common types be very easy
+to define. Simply adding an image with a caption and a reference variable
+is as easy as:
 >code(caption = "Declaring a figure is a oneliner.")
-    >f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb")
+    >f1 = figure(caption="A lovely blue bird.", image="birds.png", placement="htpb")
         >center()
->f1 = figure(caption="Some lovely red birds", image="birds.png", placement="htpb", scale=0.6)
+>f1 = figure(caption="A lovely blue bird.", image="birds.png", placement="htpb", scale=0.6)
     >center()
-
->latex("Figureref: %s" % f1)
-Just referencing figure 1:
+All common code blocks that can be referenced return a reference variable, in
+this case
+>verbatim("f1")
+. This can be easily referenced through
+>verbatim(">ref(f1)")
+, resulting in:
 >ref(f1)
+. If you wish, you can also reference using string, but in that case you
+need to provide the
+>verbatim("label")
+argument.
 
 >#print I
 
 >subfigures = figures.subsection("Subfigures")
 
->code(caption = "Figuretables are similar to tables with subfigures in the cells")
-    >s1 = figuretable(rows=1, cols=4, caption="Birds mr table")
-        >print cell.shape
-        >print rows
-        >print cols
+A common case in scientific writing is also the use of tables containing
+figures, often with captions for each individual figure. This is enabled
+with the
+>verbatim("figuretable()")
+function block, which works in a way very similar to ordinary tables,
+with the difference that all cells should contain only
+>verbatim("subfigure()")
+function blocks. This is showcased in the example below:
+>figure_example_1 = code(caption = "Figuretables are similar to tables with subfigures in the cells with the same index function.")
+    >figuretable(rows=1, cols=4, caption="A table with four lovely blue birds.")
         >center()
         >setcell(0, 0)
-            >subfigure(caption="Birds 1", image="birds.png", scale=0.6)
+            >subfigure(caption="Jason.", image="birds.png", scale=0.4)
                 >center()
         >setcell(0, 1)
-            >subfigure(caption="Birds 2", image="birds.png", scale=0.6)
+            >subfigure(caption="Kenneth.", image="birds.png", scale=0.4)
                 >center()
         >setcell(0, 2)
-            >subfigure(caption="Birds 3", image="birds.png", scale=0.6)
+            >subfigure(caption="Olav.", image="birds.png", scale=0.4)
                 >center()
         >setcell(0, 3)
-            >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.6)
+            >sf1 = subfigure(caption="Makunde.", image="birds.png", scale=0.4)
                 >center()
+>figure_caption_1 = lazy()
+    The figure table example generated from code example Listings
+    >ref(figure_example_1)
+    .
+>ss = figure_caption_1.string()
 
->caption="Hej!"
-
->s1 = figuretable(rows=1, cols=4, caption="Birds mr table")
-    >print cell.shape
-    >print rows
-    >print cols
+>s1 = figuretable(rows=1, cols=4, caption=ss)
     >center()
     >setcell(0, 0)
-        >subfigure(caption="Birds 1", image="birds.png", scale=0.4)
+        >subfigure(caption="Jason.", image="birds.png", scale=0.4)
             >center()
     >setcell(0, 1)
-        >subfigure(caption="Birds 2", image="birds.png", scale=0.4)
+        >subfigure(caption="Kenneth.", image="birds.png", scale=0.4)
             >center()
     >setcell(0, 2)
-        >subfigure(caption="Birds 3", image="birds.png", scale=0.4)
+        >subfigure(caption="Olav.", image="birds.png", scale=0.4)
             >center()
     >setcell(0, 3)
-        >sf1 = subfigure(caption="Birds 4", image="birds.png", scale=0.4)
+        >sf1 = subfigure(caption="Makunde.", image="birds.png", scale=0.4)
             >center()
 
->print caption
-
-Referencing Equation
->latex("Eqref: %s" % equation1)
->ref(equation1)
-And finally, the figure table, Figure
->ref(s1)
-and the cell:
+Note the
+>verbatim("sf1")
+assignment.
+This can be reference outside the figure table with the result:
 >ref(sf1)
+.
 
 >details = section("Details")
 >lazys = details.subsection("Lazy blocks")
@@ -324,18 +336,65 @@ Below are some examples of what you can access for example inside an equation bl
         >print Context.parent.children[0].text
         ># prints "0" as this block has no children:
         >print len(Context.children)
+The
+>verbatim("Context")
+class is the main interface for all of pylama. Through it, you can access
+details of the environment like in the example above, but it is also
+the mechanism through which the document is constructed.
+Importantly, no block gets added to the final document unless its parent
+block explicitly adds it. The
+>verbatim("Context.context")
+object has a method,
+>verbatim("Context.context.add()")
+which adds all of its child blocks into the document, which can then
+in turn add their children if they wish to.
+We will make our own version of the equation block function above to
+demonstrate this. Since all of our code should compile down to
+>verbatim("LaTex")
+, we can simply write:
+>code()
+    >def equation(label):
+    >    latex("\\begin{equation}")
+    >    Context.context.add()
+    >    latex("\label{%s}" % label)
+    >    latex("\end{equation}")
+    >    return label
+Now this can be put in a python file and exported as any other library into
+any pylama document. The function simply puts the proper declarations
+around the equation block and then adds the child blocks through the
+>verbatim("Context.context.add()")
+function.
+>things = section("Useful Things")
+>inputs = things.subsection("Combining files")
 
->inputs = section("Combining files")
-
->code(caption = ".pymd files can be included in each other using the input command.")
+Splitting your text up between different
+>verbatim(".pymd")
+or
+>verbatim(".tex")
+files is generally considered good practice. A
+>verbatim(".pymd")
+file can be included via the
+>verbatim("input()")
+function while
+>verbatim(".tex")
+files are imported via the
+>verbatim("latexinput()")
+function.
+>verbatim(".pymd")
+files get expanded within the larger environment, giving it access to
+declared variables there in order for it to e.g. reference figures or other sections.
+So, for example, if you have a file
+>verbatim("test/input.pymd")
+you can import it with:
+>code()
     >input("test/input.pymd")
-
->code(caption = "This is the content of the test/input.pymd file")
+If the contents of the file are
+>code()
     This was written in another file!
-
+this will result in the following line:
 >input("test/input.pymd")
 
->references = section("References")
+>references = things.subsection("Citing")
 
 The following code cites a reference and adds a bibliography file to
 the document:
