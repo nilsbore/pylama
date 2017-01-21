@@ -2,7 +2,7 @@
 >documentclass("proc")
 >from pylama.common import *
 >from pylama.layout import centering, raggedleft, raggedright, center
->from pylama.convenience import latex
+>from pylama.convenience import latex, text
 >from pylama.table import table, setcell
 >from pylama.figure import figure, includegraphics, figuretable, subfigure
 >from pylama.code import code, verbatim
@@ -88,7 +88,7 @@ document. The indentation based syntax is a cornerstone of the pylama
 language and allows these so called contexts to be nested arbitrarily deep.
 The next section delves deeper into contexts.
 
->items = intro.subsection("Blocks and Items")
+>items = intro.subsection("Lists and Blocks")
 
 Item lists are a good example for illustrating nested text blocks.
 At the top level sits an
@@ -123,11 +123,37 @@ text or code blocks and that they can be layered in several steps.
 This is illustrated in the next section, where we mix text and
 figures inside a table environment.
 
->tables = intro.subsection("Tables")
+>tables = intro.subsection("Tables and Variables")
 
-This is a very simple test.
-This should also work with multi-line.
-
+Usually, variables in pylama are declared in a global scope. For example,
+if you declare a variable
+>verbatim(">a=3")
+anywhere in your document, even inside a block, it will be accessible anywhere
+after that declaration. This allows you to reference a nested block even
+when you are on a higher level in the block hierarchy, as we will see in
+the subfigure example. However, there is one exception to this in the form
+of local variables. Local variables are declared by providing keyword
+arguments to the block functions. In the example below,
+>verbatim("rows, cols")
+and
+>verbatim("caption")
+are local variables and can only be referenced within the child block.
+Notice how we can use them in the table definition to display the size of the table.
+>table_example_1 = code(caption = "The tables are indexed by row col in a numpy matrix")
+    >table(rows=2, cols=3, caption="A table.")
+        >centering()
+        >setcell(0, 0)
+            Figure:
+        >setcell(0, 1)
+            Rows:
+        >setcell(0, 2)
+            Columns:
+        >setcell(1, 0)
+            >includegraphics(image="birds.png", scale=0.3)
+        >setcell(1, 1)
+            >text(rows)
+        >setcell(1, 2)
+            >text(cols)
 ># A lazy provides two methods, .string() and .add()
 ># String simply removes the generated latex text as a string
 ># while add inserts the content in the main latex document
@@ -139,71 +165,40 @@ This should also work with multi-line.
     . See table example Listing
     >ref(table_example_1)
     for code.
-
->table_example_1 = code(caption = "The tables are indexed by row col in a numpy matrix")
-    >t1 = table(rows=2, cols=3, caption="A table.")
-        >print cell.shape
-        >print rows
-        >print cols
-        >centering()
-        >setcell(0, 0)
-            a
-        >setcell(0, 2)
-            c
-        >setcell(0, 1)
-            b
-        >setcell(1, 0)
-            >includegraphics(image="birds.png", scale=0.3)
-        >setcell(1, 1)
-            e
-        >setcell(1, 2)
-            f
-        >cell[1, 1].children[0].text = "Tjena"
-        >print cell[0, 0].children[0].text
-        >print cell[0, 1].parent.indent
-
 >ss = table_caption_1.string()
 
->t1 = table(rows=2, cols=3, width="\textwidth", caption=ss)
-    >print cell.shape
-    >print rows
-    >print cols
+>table_1 = table(rows=2, cols=3, width="\textwidth", caption=ss)
     >centering()
     >setcell(0, 0)
-        a
-    >setcell(0, 2)
-        c
+        Figure:
     >setcell(0, 1)
-        b
+        Rows:
+    >setcell(0, 2)
+        Columns:
     >setcell(1, 0)
         >includegraphics(image="birds.png", scale=0.3)
     >setcell(1, 1)
-        e
+        >text(rows)
     >setcell(1, 2)
-        f
-    >cell[1, 1].children[0].text = "Tjena"
-    >print cell[0, 0].children[0].text
-    >print cell[0, 1].parent.indent
-
->latex("Tableref: %s" % t1)
-
-Just referencing table 1:
->ref(t1)
-
+        >text(cols)
+The result can be viewed in Table
+>ref(table_1)
+. Note that indexing the blocks like this might be a slightly clumsy way of
+defining the contents of your table. Instead, we might use python lists to
+define the table below. Looping through and setting the blocks appropriately
+allows us to express this more compactly.
 >table_example_2 = code(caption="Python and pylama interoperation.")
     >table_contents = [["(Observations)", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
     >                  ["Sea", 2, 10, 1, 3, 4],\
     >                  ["Park", 4, 2, 6, 8, 0],\
     >                  ["Cliff", 2, 4, 1, 0, 2]]
-    >table(rows=4, cols=6, width="\textwidth", caption="Bird locations.")
-        >print cell.shape
+    >table(rows=4, cols=6, caption="Bird places.")
         >centering()
         >for r in range(0, rows):
         >    for c in range(0, cols):
         >        setcell(r=r, c=c)
             Obs:
-            >latex(str(table_contents[r][c]))
-
+            >text(table_contents[r][c])
 >table_caption_2 = lazy()
     This example showcases how you can define a table in python and directly import it into pylama.
     For the code generating this table, look at Listing
@@ -215,15 +210,16 @@ Just referencing table 1:
 >                  ["Sea", 2, 10, 1, 3, 4],\
 >                  ["Park", 4, 2, 6, 8, 0],\
 >                  ["Cliff", 2, 4, 1, 0, 2]]
->table(rows=4, cols=6, width="\textwidth", caption=ss)
-    >print cell.shape
+>table_2 = table(rows=4, cols=6, caption=ss)
     >centering()
-
     >for r in range(0, rows):
     >    for c in range(0, cols):
     >        setcell(r=r, c=c)
         Obs:
-        >latex(str(table_contents[r][c]))
+        >text(table_contents[r][c])
+The resulting table is shown in Table
+>ref(table_2)
+.
 
 >figures = section("Figures")
 
@@ -289,6 +285,30 @@ And finally, the figure table, Figure
 >ref(s1)
 and the cell:
 >ref(sf1)
+
+>lazys = section("Lazy blocks")
+
+Pylama is designed to make the common things easy while making the hard
+things possible. In that spirit, e.g. captions of figures and tables are
+provided as strings to the block function of the figure or table.
+However, sometimes you would like the captions themselves to be defined
+using the pylama functions and blocks. This is where the
+>verbatim("lazy()")
+block function comes in. It enables you to define a block like:
+>code()
+    >lazy_1 = lazy()
+        This is text that will only get added later.
+This block will not get added in the text in that place of its declaration.
+Instead it will get added when you call
+>verbatim("lazy\_1.add()")
+. However, you could instead call
+>verbatim("ss = lazy\_1.string()")
+, resulting in a string
+>verbatim("ss")
+with the block evaluated as text, which you can then provide as the
+caption argument to a figure, table, or other block function.
+Several of the more complex captions in the examples of this document
+were generated in this way.
 
 >inputs = section("Combining files")
 

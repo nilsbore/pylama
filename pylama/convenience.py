@@ -3,6 +3,9 @@ import random, string
 
 random.seed(1973)
 
+def text(text):
+    Context.document += str(text)
+
 def latex(text):
     Context.document += text + "\n"
 
