@@ -71,7 +71,7 @@ assignment preceding the equation declaration. This gives us a handle
 that we can use to reference the equation later in the document using
 the syntax
 >verbatim(">ref(equation1)")
-with the result
+with the result:
 >ref(equation1)
 . This has the great advantage that we can actually check if the variable
 is present in the current context and throw and error if that is not the case.
@@ -88,16 +88,21 @@ document. The indentation based syntax is a cornerstone of the pylama
 language and allows these so called contexts to be nested arbitrarily deep.
 The next section delves deeper into contexts.
 
->items = intro.subsection("Items and Scopes")
+>items = intro.subsection("Blocks and Items")
 
->comment()
-    >itemize()
-        >for i in range(0,5):
-        >    item()
-            Item:
-            >latex(str(i))
-
->code(caption="Items need to be organized by indentation to be properly parsed.")
+Item lists are a good example for illustrating nested text blocks.
+At the top level sits an
+>verbatim(">itemize()")
+or
+>verbatim(">enumerate()")
+declaration. In the indented level, as children of the
+>verbatim(">itemize()")
+, sit several
+>verbatim(">item()")
+which in turn have their own children, typically text, that
+declare the content of the respective items. A complete list can be
+declared as
+>code()
     >itemize()
         >item()
             Item 1!
@@ -105,18 +110,28 @@ The next section delves deeper into contexts.
             Item 2!
         >item()
             Item 3!
-
->latex("Some latex")
+which results in the following list:
+>itemize()
+    >item()
+        Item 1!
+    >item()
+        Item 2!
+    >item()
+        Item 3!
+Note that the children block themselves can contain one or multiple
+text or code blocks and that they can be layered in several steps.
+This is illustrated in the next section, where we mix text and
+figures inside a table environment.
 
 >tables = intro.subsection("Tables")
 
 This is a very simple test.
 This should also work with multi-line.
 
-># A scope provides two methods, .string() and .add()
+># A lazy provides two methods, .string() and .add()
 ># String simply removes the generated latex text as a string
 ># while add inserts the content in the main latex document
->table_caption_1 = scope()
+>table_caption_1 = lazy()
     The table showcases how to assign table cells by indices and
     how you can include contexts within each others. The image
     showcased in all figures is created by BanzaiTokyo,
@@ -189,7 +204,7 @@ Just referencing table 1:
             Obs:
             >latex(str(table_contents[r][c]))
 
->table_caption_2 = scope()
+>table_caption_2 = lazy()
     This example showcases how you can define a table in python and directly import it into pylama.
     For the code generating this table, look at Listing
     >ref(table_example_2)

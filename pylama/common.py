@@ -74,7 +74,7 @@ class section(object):
     def subsection(self, name):
         return section(name, self.nesting+1)
 
-class scope(object):
+class lazy(object):
 
     def __init__(self):
 
@@ -96,14 +96,3 @@ class scope(object):
         Context.document = document_bkp
 
         return string_bkp
-
-
-# def input(f, context):
-#     if os.path(f).ext() == "pymd":
-#         open f as b:
-#             evaluate(b)
-#     elif os.path(f).ext() == "md":
-#         markdown(b)
-#
-# def escape(context):
-#     markdown(context.text)
