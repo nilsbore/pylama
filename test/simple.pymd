@@ -208,7 +208,7 @@ is as easy as:
     >center()
 All common code blocks that can be referenced return a reference variable, in
 this case >verbatim("f1"). This can be easily referenced through >verbatim(">ref(f1)"),
-resulting in: >ref(f1). If you wish, you can also reference using string,
+resulting in: >ref(f1). If you wish, you can also reference using a string,
 but in that case you need to provide the >verbatim("label") argument.
 
 >#print I
