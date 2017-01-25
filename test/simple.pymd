@@ -23,17 +23,14 @@
     comment with
     several lines.
 
-Pylama can be best described as a wrapper around the
->verbatim("LaTeX")
+Pylama can be best described as a wrapper around the >verbatim("LaTeX")
 typesetting system. It attempts to provide a cleaner syntax for your
 standard document while still allowing you to add latex inline when needed.
 The pylama language is built on top of the Python interpreter and,
-as opposed to
->verbatim("LaTeX")
-the language is inspired by Python's indentation based grouping of code and text.
-To execute code within your pylama document, you start the line with a
->verbatim(">")
-, similar to command prompts like bash. Use one or multiple lines depending
+as opposed to >verbatim("LaTeX"), the language is
+inspired by Python's indentation based grouping of code and text.
+To execute code within your pylama document, you start the line with a >verbatim(">"),
+similar to command prompts like bash. Use one or multiple lines depending
 on the complexity of the task, all python code and libraries can be imported
 and used.
 
@@ -65,25 +62,19 @@ can be declared with the following syntax:
 >code()
     >equation1 = equation()
         A*A = A^2
-Note the
->verbatim("equation1")
+Note the >verbatim("equation1")
 assignment preceding the equation declaration. This gives us a handle
 that we can use to reference the equation later in the document using
-the syntax
->verbatim(">ref(equation1)")
-with the result:
->ref(equation1)
-. This has the great advantage that we can actually check if the variable
+the syntax >verbatim(">ref(equation1)") with the result: >ref(equation1).
+This has the great advantage that we can actually check if the variable
 is present in the current context and throw and error if that is not the case.
 In latex this would quietly fail with a question mark in the final document.
 
 The other important thing to note is that there is an indent before
 the actual equation text. This declares that the text is a child of
-the
->verbatim("equation()")
-declaration. The equation environment takes care of processing the
-formula into text that can be inserted into the final
->verbatim("LaTeX")
+the >verbatim("equation()") declaration.
+The equation environment takes care of processing the
+formula into text that can be inserted into the final >verbatim("LaTeX")
 document. The indentation based syntax is a cornerstone of the pylama
 language and allows these so called contexts to be nested arbitrarily deep.
 The next section delves deeper into contexts.
@@ -91,17 +82,11 @@ The next section delves deeper into contexts.
 >items = intro.subsection("Lists and Blocks")
 
 Item lists are a good example for illustrating nested text blocks.
-At the top level sits an
->verbatim(">itemize()")
-or
->verbatim(">enumerate()")
-declaration. In the indented level, as children of the
->verbatim(">itemize()")
-, sit several
->verbatim(">item()")
-which in turn have their own children, typically text, that
-declare the content of the respective items. A complete list can be
-declared as
+At the top level sits an >verbatim(">itemize()") or >verbatim(">enumerate()")
+declaration. In the indented level, as children of the >verbatim(">itemize()"),
+sit several >verbatim(">item()") which in turn have their own children,
+typically text, that declare the content of the respective items.
+A complete list can be declared as
 >code()
     >itemize()
         >item()
@@ -126,18 +111,15 @@ figures inside a table environment.
 >tables = intro.subsection("Tables and Variables")
 
 Usually, variables in pylama are declared in a global scope. For example,
-if you declare a variable
->verbatim(">a=3")
+if you declare a variable >verbatim(">a=3")
 anywhere in your document, even inside a block, it will be accessible anywhere
 after that declaration. This allows you to reference a nested block even
 when you are on a higher level in the block hierarchy, as we will see in
 the subfigure example. However, there is one exception to this in the form
 of local variables. Local variables are declared by providing keyword
-arguments to the block functions. In the example below,
->verbatim("rows, cols")
-and
->verbatim("caption")
-are local variables and can only be referenced within the child block.
+arguments to the block functions. In the example below, >verbatim("rows, cols")
+and >verbatim("caption") are local variables and can only be
+referenced within the child block.
 Notice how we can use them in the table definition to display the size of the table.
 >table_example_1 = code(caption = "The tables are indexed by row col in a numpy matrix")
     >table(rows=2, cols=3, caption="A table.")
@@ -160,11 +142,9 @@ Notice how we can use them in the table definition to display the size of the ta
 >table_caption_1 = lazy()
     The table showcases how to assign table cells by indices and
     how you can include contexts within each others. The image
-    showcased in all figures is created by BanzaiTokyo,
-    >url("http://www.iconarchive.com/show/ugly-birds-icons-by-banzaitokyo/angor-icon.html")
-    . See table example Listing
-    >ref(table_example_1)
-    for code.
+    showcased in all figures is created by
+    BanzaiTokyo, >url("http://www.iconarchive.com/show/ugly-birds-icons-by-banzaitokyo/angor-icon.html").
+    See table example Listing >ref(table_example_1) for code.
 >ss = table_caption_1.string()
 
 >table_1 = table(rows=2, cols=3, width="\textwidth", caption=ss)
@@ -181,9 +161,8 @@ Notice how we can use them in the table definition to display the size of the ta
         Columns:
     >setcell(1, 2)
         >text(cols)
-The result can be viewed in Table
->ref(table_1)
-. Note that indexing the blocks like this might be a slightly clumsy way of
+The result can be viewed in Table >ref(table_1).
+Note that indexing the blocks like this might be a slightly clumsy way of
 defining the contents of your table. Instead, we might use python lists to
 define the table below. Looping through and setting the blocks appropriately
 allows us to express this more compactly.
@@ -201,9 +180,7 @@ allows us to express this more compactly.
             >text(table_contents[r][c])
 >table_caption_2 = lazy()
     This example showcases how you can define a table in python and directly import it into pylama.
-    For the code generating this table, look at Listing
-    >ref(table_example_2)
-    .
+    For the code generating this table, look at Listing >ref(table_example_2).
 >ss = table_caption_2.string()
 
 >table_contents = [["(Observations)", "Finch", "Seagull", "Crow", "Pigeon", "Hawk"],\
@@ -217,9 +194,7 @@ allows us to express this more compactly.
     >        setcell(r=r, c=c)
         Obs:
         >text(table_contents[r][c])
-The resulting table is shown in Table
->ref(table_2)
-.
+The resulting table is shown in Table >ref(table_2).
 
 >figures = section("Figures and References")
 
@@ -232,16 +207,9 @@ is as easy as:
 >f1 = figure(caption="A lovely blue bird.", image="birds.png", placement="htpb", scale=0.6)
     >center()
 All common code blocks that can be referenced return a reference variable, in
-this case
->verbatim("f1")
-. This can be easily referenced through
->verbatim(">ref(f1)")
-, resulting in:
->ref(f1)
-. If you wish, you can also reference using string, but in that case you
-need to provide the
->verbatim("label")
-argument.
+this case >verbatim("f1"). This can be easily referenced through >verbatim(">ref(f1)"),
+resulting in: >ref(f1). If you wish, you can also reference using string,
+but in that case you need to provide the >verbatim("label") argument.
 
 >#print I
 
@@ -249,11 +217,9 @@ argument.
 
 A common case in scientific writing is also the use of tables containing
 figures, often with captions for each individual figure. This is enabled
-with the
->verbatim("figuretable()")
-function block, which works in a way very similar to ordinary tables,
-with the difference that all cells should contain only
->verbatim("subfigure()")
+with the >verbatim("figuretable()") function block,
+which works in a way very similar to ordinary tables,
+with the difference that all cells should contain only >verbatim("subfigure()")
 function blocks. This is showcased in the example below:
 >figure_example_1 = code(caption = "Figuretables are similar to tables with subfigures in the cells with the same index function.")
     >figuretable(rows=1, cols=4, caption="A table with four lovely blue birds.")
@@ -271,9 +237,7 @@ function blocks. This is showcased in the example below:
             >sf1 = subfigure(caption="Makunde.", image="birds.png", scale=0.4)
                 >center()
 >figure_caption_1 = lazy()
-    The figure table example generated from code example Listings
-    >ref(figure_example_1)
-    .
+    The figure table example generated from code example Listings >ref(figure_example_1).
 >ss = figure_caption_1.string()
 
 >s1 = figuretable(rows=1, cols=4, caption=ss)
@@ -291,12 +255,8 @@ function blocks. This is showcased in the example below:
         >sf1 = subfigure(caption="Makunde.", image="birds.png", scale=0.4)
             >center()
 
-Note the
->verbatim("sf1")
-assignment.
-This can be reference outside the figure table with the result:
->ref(sf1)
-.
+Note the >verbatim("sf1") assignment.
+This can be reference outside the figure table with the result: >ref(sf1).
 
 >details = section("Details")
 >lazys = details.subsection("Lazy blocks")
@@ -305,19 +265,15 @@ Pylama is designed to make the common things easy while making the hard
 things possible. In that spirit, e.g. captions of figures and tables are
 provided as strings to the block function of the figure or table.
 However, sometimes you would like the captions themselves to be defined
-using the pylama functions and blocks. This is where the
->verbatim("lazy()")
+using the pylama functions and blocks. This is where the >verbatim("lazy()")
 block function comes in. It enables you to define a block like:
 >code()
     >lazy_1 = lazy()
         This is text that will only get added later.
 This block will not get added in the text in that place of its declaration.
-Instead it will get added when you call
->verbatim("lazy\_1.add()")
-. However, you could instead call
->verbatim("ss = lazy\_1.string()")
-, resulting in a string
->verbatim("ss")
+Instead it will get added when you call >verbatim("lazy\_1.add()").
+However, you could instead call >verbatim("ss = lazy\_1.string()"),
+resulting in a string >verbatim("ss")
 with the block evaluated as text, which you can then provide as the
 caption argument to a figure, table, or other block function.
 Several of the more complex captions in the examples of this document
@@ -336,23 +292,17 @@ Below are some examples of what you can access for example inside an equation bl
         >print Context.parent.children[0].text
         ># prints "0" as this block has no children:
         >print len(Context.children)
-The
->verbatim("Context")
-class is the main interface for all of pylama. Through it, you can access
-details of the environment like in the example above, but it is also
-the mechanism through which the document is constructed.
+The >verbatim("Context") class is the main interface for all of pylama.
+Through it, you can access details of the environment like in the example above,
+but it is also the mechanism through which the document is constructed.
 Importantly, no block gets added to the final document unless its parent
-block explicitly adds it. The
->verbatim("Context.context")
-object has a method,
->verbatim("Context.context.add()")
-which adds all of its child blocks into the document, which can then
-in turn add their children if they wish to.
+block explicitly adds it. The >verbatim("Context.context") object has a
+method, >verbatim("Context.context.add()") which adds all of its child blocks
+into the document, which can then in turn add their children if they wish to.
 We will make our own version of the equation block function above to
-demonstrate this. Since all of our code should compile down to
->verbatim("LaTex")
-, we can simply write:
->code()
+demonstrate this. Since all of our code should compile down to >verbatim("LaTex"),
+we can simply write:
+>code(show_arrows=False)
     >def equation(label):
     >    latex("\\begin{equation}")
     >    Context.context.add()
@@ -361,31 +311,20 @@ demonstrate this. Since all of our code should compile down to
     >    return label
 Now this can be put in a python file and exported as any other library into
 any pylama document. The function simply puts the proper declarations
-around the equation block and then adds the child blocks through the
->verbatim("Context.context.add()")
-function.
+around the equation block and then adds the child blocks through
+the >verbatim("Context.context.add()") function.
+
 >things = section("Useful Things")
 >inputs = things.subsection("Combining files")
 
-Splitting your text up between different
->verbatim(".pymd")
-or
->verbatim(".tex")
-files is generally considered good practice. A
->verbatim(".pymd")
-file can be included via the
->verbatim("input()")
-function while
->verbatim(".tex")
-files are imported via the
->verbatim("latexinput()")
-function.
->verbatim(".pymd")
-files get expanded within the larger environment, giving it access to
-declared variables there in order for it to e.g. reference figures or other sections.
-So, for example, if you have a file
->verbatim("test/input.pymd")
-you can import it with:
+Splitting your text up between different >verbatim(".pymd")
+or >verbatim(".tex") files is generally considered good practice.
+A >verbatim(".pymd") file can be included via the >verbatim("input()")
+function while >verbatim(".tex") files are imported via the >verbatim("latexinput()")
+function. >verbatim(".pymd") files get expanded within the larger environment,
+giving it access to declared variables there in order for it to e.g.
+reference figures or other sections. So, for example, if you have
+a file >verbatim("test/input.pymd") you can import it with:
 >code()
     >input("test/input.pymd")
 If the contents of the file are
@@ -398,13 +337,10 @@ this will result in the following line:
 
 The following code cites a reference and adds a bibliography file to
 the document:
-
 >code()
     >cite("knuth1979tex")
     >add_bibliography("main", "ieeetr")
-
-This results in the reference
->cite("knuth1979tex")
+This results in the reference >cite("knuth1979tex")
 and a bibliography at the end of the document.
 >add_bibliography("main", "ieeetr")
 

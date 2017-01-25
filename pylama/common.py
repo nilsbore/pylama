@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from pylama.context import Context
-from pylama.convenience import latex, randomref
+from pylama.convenience import latex, latexl, randomref
 
 def add():
     Context.context.add()
@@ -12,7 +12,7 @@ def make_title(title, author):
     latex("\maketitle")
 
 def ref(ref):
-    latex("\\ref{%s}" % ref)
+    latexl("\\ref{%s}" % ref)
 
 def documentclass(documenttype):
     latex("\documentclass{%s}" % documenttype)
@@ -55,7 +55,7 @@ def add_bibliography(bibfile, bibstyle):
     latex("\\bibliographystyle{%s}" % bibstyle)
 
 def cite(ref):
-    latex("\cite{%s}" % ref)
+    latexl("\cite{%s}" % ref)
 
 def input(infile):
     indent = Context.context.indent+4

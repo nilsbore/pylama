@@ -1,6 +1,7 @@
 #import code
 
 import ast
+import re
 
 class Context(object):
 
@@ -10,12 +11,13 @@ class Context(object):
     parent = None
     children = None
 
-    def __init__(self, myparent, func=None, text=None, indent=0):
+    def __init__(self, myparent, func=None, text=None, indent=0, inline=False):
         self.parent = myparent
         self.children = []
         self.function = func
         self.text = text
         self.indent = indent
+        self.inline = inline
         # Is this really needed every time we instantiate a new Context?
         # Doesn't seem like it...
         # exec "from pylama.context import Context" in Context.variables
@@ -37,6 +39,9 @@ class Context(object):
             childindent = 0
         else:
             childindent = self.indent + 4
+
+        #identifier = re.compile(r"[>][^\d\W]\w*[(].*?[)]") #, re.UNICODE)
+        identifier = re.compile(r"[>][^\d\W]\w*[(](?:\"[^\"]+\"|.*?)[)]")
 
         nbr = 0
         nbr_breaks = 0
@@ -66,7 +71,19 @@ class Context(object):
                         nbr_breaks = 0
                         self.children.append(Context(self, text="", indent=lineindent))
                     self.children[-1].text += "\n"*nbr_breaks
-                    self.children[-1].text += woindent
+
+                    # this code checks for inline python code
+                    matches = identifier.finditer(woindent)
+                    splits = identifier.split(woindent)
+                    for te, fn in zip(splits, matches):
+                        self.children[-1].text += te
+                        self.children.append(Context(self, func=fn.group()[1:], indent=lineindent, inline=True))
+                        self.children.append(Context(self, text="", indent=lineindent))
+
+                    if len(splits[-1]) == 0: # this should never happen
+                        self.children.pop()
+                    else:
+                        self.children[-1].text += splits[-1] #woindent
                     nbr = nbr + 1
                     nbr_breaks = 0
             elif len(woindent) == 0:
