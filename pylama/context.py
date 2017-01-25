@@ -132,11 +132,16 @@ class Context(object):
                 for kw in call.body[0].value.keywords:
                     if kw.arg in Context.variables:
                         restore[kw.arg] = Context.variables[kw.arg]
+                    value = None
+                    # this is all a bit too much now that we can compile stuff
                     if isinstance(kw.value, ast.Name):
                         if kw.value.id in Context.variables:
                             value = Context.variables[kw.value.id]
                         else:
                             value = None
+                    elif isinstance(kw.value, ast.Expr) or isinstance(kw.value, ast.Call):
+                        expr = ast.Expression(kw.value)
+                        value = eval(compile(expr, '', 'eval'), Context.variables)
                     else:
                         value = ast.literal_eval(kw.value)
                     if value is not None:
