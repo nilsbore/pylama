@@ -1,9 +1,10 @@
-from pylama.convenience import latex, maybe_caption, randomref
+from pylama.convenience import latex, latex_import, maybe_caption, randomref
 from pylama.context import Context
+from pylama.bookkeeping import BookKeeping
 import numpy as np
 
-latex("\usepackage{graphicx}")
-latex("\usepackage{subcaption}")
+latex_import("\usepackage{graphicx}")
+latex_import("\usepackage{subcaption}")
 
 def includegraphics(image, scale=1.0):
     latex("\includegraphics[scale=%f]{%s}" % (scale, image))
@@ -20,6 +21,7 @@ def figure(image, caption=None, label=None, placement="t", scale=1.0):
 
     if not caption is None:
         latex("\caption{%s}" % caption)
+        BookKeeping.add_label(label, "figure")
 
     latex("\label{%s}" % label)
     latex("\end{figure}")
@@ -44,6 +46,7 @@ def figuretable(rows, cols, placement="t", label=None, caption=None):
 
     if not caption is None:
         latex("\caption{%s}" % caption)
+        BookKeeping.add_label(label, "figure")
 
     latex("\label{%s}" % label)
     latex("\end{figure*}")
@@ -70,4 +73,5 @@ def subfigure(image, caption=None, label=None, placement="t", scale=1.0, width=N
     latex("\label{%s}" % label)
     latex("\end{subfigure}")
 
+    #BookKeeping.add_label(label, "figure") # we should get this by getting the ref of parent, i.e. figuretable
     return label

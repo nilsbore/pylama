@@ -1,7 +1,8 @@
-from pylama.convenience import latex, latexl, randomref
+from pylama.convenience import latex, latexl, latex_import, randomref
 from pylama.context import Context
+from pylama.bookkeeping import BookKeeping
 
-latex("\usepackage{listings}")
+latex_import("\usepackage{listings}")
 
 def document_context(context, base_indent, document, show_arrows):
     indent_str = " "*(context.indent-base_indent)
@@ -22,9 +23,11 @@ def code(caption=None, label=None, show_arrows=True):
     latexl("\\begin{lstlisting}[label=%s, captionpos=b, breaklines=true, basicstyle=\scriptsize" % label)
     if caption is not None:
         latexl(", caption=%s" % caption)
+        BookKeeping.add_label(label, "lstlisting")
     latex("]")
     latexl(document)
     latex("\end{lstlisting}")
+
     return label
 
 def verbatim(code_string):

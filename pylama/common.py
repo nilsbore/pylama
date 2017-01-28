@@ -2,6 +2,7 @@
 
 from pylama.context import Context
 from pylama.convenience import latex, latexl, randomref
+from pylama.bookkeeping import BookKeeping
 
 def add():
     Context.context.add()
@@ -12,7 +13,10 @@ def make_title(title, author):
     latex("\maketitle")
 
 def ref(ref):
-    latexl("\\ref{%s}" % ref)
+    if BookKeeping.is_used:
+        latexl(str(BookKeeping.ref(ref)))
+    else:
+        latexl("\\ref{%s}" % ref)
 
 def documentclass(documenttype):
     latex("\documentclass{%s}" % documenttype)
@@ -29,6 +33,7 @@ def latexblock(blockname, full_width=False, label=None):
     Context.context.add()
     latex("\label{%s}" % label)
     latex("\end{%s}" % blockname)
+    BookKeeping.add_label(label, "equation")
     return label
 
 def begin_document():
@@ -69,7 +74,9 @@ class section(object):
     def __init__(self, name, nesting=0):
         self.name = name
         self.nesting = nesting
-        latex("\\" + "sub"*self.nesting + "section{%s}" % self.name)
+        subsub = "sub"*self.nesting + "section"
+        BookKeeping.add_label(name, subsub)
+        latex("\\" + subsub + "{%s}" % self.name)
 
     def subsection(self, name):
         return section(name, self.nesting+1)

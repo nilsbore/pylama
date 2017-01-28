@@ -1,6 +1,6 @@
-from pylama.common import latex
+from pylama.convenience import latex, latex_import
 
-latex("\usepackage{hyperref}")
+latex_import("\usepackage{hyperref}")
 
 def url(url_string):
     latex("\url{%s}" % url_string)

@@ -1,5 +1,6 @@
 from pylama.context import Context
 from pylama.convenience import randomref, maybe_caption, latex, latexl
+from pylama.bookkeeping import BookKeeping
 import numpy as np
 
 def table(rows, cols, width="\textwidth", placement="t", caption=None, label=None):
@@ -33,6 +34,8 @@ def table(rows, cols, width="\textwidth", placement="t", caption=None, label=Non
     latex("\label{%s}" % label)
     latex("\end{table*}")
 
+    if caption is not None:
+        BookKeeping.add_label(label, "table")
     return label
 
 def setcell(r, c):

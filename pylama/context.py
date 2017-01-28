@@ -10,6 +10,7 @@ class Context(object):
     context = None
     parent = None
     children = None
+    imports = []
 
     def __init__(self, myparent, func=None, text=None, indent=0, inline=False):
         self.parent = myparent
@@ -18,6 +19,7 @@ class Context(object):
         self.text = text
         self.indent = indent
         self.inline = inline
+
         # Is this really needed every time we instantiate a new Context?
         # Doesn't seem like it...
         # exec "from pylama.context import Context" in Context.variables
@@ -27,7 +29,6 @@ class Context(object):
 
     def get_function_body(self, line, indent):
         woindent = line.lstrip()
-        print woindent
         if len(line)-len(woindent) != indent:
             return ""
         if len(woindent) == 0 or woindent[0] != '>':
