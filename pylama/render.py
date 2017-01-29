@@ -1,8 +1,17 @@
 import subprocess
 from pylama.context import Context
 from pylama.bookkeeping import BookKeeping
+from pylama.convenience import randomref
+import os
 
-def render_standalone(document, imports):
+def render_standalone(document, imports, name=None):
+    if name is None:
+        name=randomref()
+
+    tempdir = ".tmp"
+
+    if not os.path.exists(tempdir):
+        os.makedirs(tempdir)
 
     standalone_document = "\documentclass[preview]{standalone}\n"
     for imp in imports:
@@ -13,30 +22,36 @@ def render_standalone(document, imports):
     standalone_document += document
     standalone_document += "\end{document}"
 
-    outfile = "try.tex"
+    texfile = os.path.join(tempdir, "%s.tex" % name)
 
-    with open(outfile, 'w') as f:
+    with open(texfile, 'w') as f:
         f.write(standalone_document)
 
-    pdffile = "try.pdf"
-    pngfile = "try.png"
-    subprocess.call(['pdflatex', '-shell-escape', outfile, pdffile])
+    pdffile = os.path.join(tempdir, "%s.pdf" % name)
+    pngfile = os.path.join(tempdir, "%s.png" % name)
+    subprocess.call(['pdflatex', '-output-directory', os.path.abspath(tempdir), '-shell-escape', texfile])
     subprocess.call(['convert', '-density',  '300', '-quality', '90', pdffile, pngfile])
 
-def render():
+    return pngfile
+
+def render(name=None):
     document_bkp = Context.document
     Context.document = ""
-    for l, (block, number) in BookKeeping.labels.items():
-        print "SECTION!"
-        if block == 'section':
-            print l, number, BookKeeping.blocks['section']
-    for l, (block, number) in BookKeeping.labels.items():
-        print "SUBSECTION!"
-        if block == 'subsection':
-            print l, number, BookKeeping.blocks['subsection']
+    # for l, (block, number) in BookKeeping.labels.items():
+    #     print "SECTION!"
+    #     if block == 'section':
+    #         print l, number, BookKeeping.blocks['section']
+    # for l, (block, number) in BookKeeping.labels.items():
+    #     print "SUBSECTION!"
+    #     if block == 'subsection':
+    #         print l, number, BookKeeping.blocks['subsection']
     BookKeeping.is_used = True
     Context.context.add()
     BookKeeping.is_used = False
     if len(Context.document) > 0:
-        render_standalone(Context.document, Context.imports)
+        image_file = render_standalone(Context.document, Context.imports)
+    else:
+        image_file = None
     Context.document = document_bkp + Context.document
+
+    return image_file

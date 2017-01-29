@@ -69,6 +69,15 @@ def input(infile):
         Context.context.parse_buf(lines)
         Context.context.add()
 
+def string_copy():
+
+    document_bkp = Context.document
+    Context.document = ""
+    Context.context.add()
+    string_bkp = Context.document
+    Context.document = document_bkp + string_bkp
+    return string_bkp
+
 class section(object):
 
     def __init__(self, name, nesting=0):
