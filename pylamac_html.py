@@ -10,7 +10,6 @@ import sys
 def html_add(context):
 
     BookKeeping.is_used = True
-    #Context.variables["BookKeeping"] = BookKeeping
 
     document = ('<!doctype html>\n'
                 '<html lang="en">\n'
@@ -18,50 +17,59 @@ def html_add(context):
                 '    <meta charset="UTF-8">\n'
                 '    <title>Test Document</title>\n'
                 '</head>\n'
-                '<link rel="stylesheet" href="simple.css">\n'
+                '<link rel="stylesheet" href="styles/default_latex.css">\n'
                 '<body class="bodyclass">\n'
                 '<div id="container">\n')
 
     active = False
+    tag_open = False
+    break_string = "\n    <br/>\n    <br/>\n    "
 
     for child in context.children:
         if child.function is None:
-            document += '    <p>\n       '
-            document += child.text + "\n"
+            if not tag_open:
+                document += '    <p>\n       '
+                tag_open = True
+            text = child.text.rstrip().replace("\n\n", break_string)
+            document += text #+ "</p>\n"
+            tag_open = True
         elif child.inline:
             string_block = Context(context, '_temp_string = string_copy()')
             string_block.children.append(child)
             string_block.evaluate()
-            document += '    <p>\n       '
+            if not tag_open:
+                document += '    <p>\n       '
+                tag_open = True
             document += Context.variables['_temp_string']
-            document += '</p>'
-
+            #document += '</p>'
+            tag_open = True
         else:
-            #if ("import" in child.function or "documentclass" in child.function) or \
-            #   ("equation" not in child.function and "table" not in child.function and \
-            #    "code" not in child.function and "section" not in child.function):
-
             if "begin_document" in child.function:
                 active = True
                 child.evaluate()
                 if "title" in Context.variables:
-                    document += '<h1 align="center">' + Context.variables["title"] + '</h1>\n'
+                    document += '    <h1 align="center">' + Context.variables["title"] + '</h1>\n'
                 if "author" in Context.variables:
-                    document += '<h3 align="center">' + Context.variables["author"] + '</h3>\n'
+                    document += '    <h3 align="center">' + Context.variables["author"] + '</h3>\n'
             elif active and "end_document" in child.function:
                 active = False
                 child.evaluate()
-            #elif active and
-            #    child.evaluate()
             elif active:
+                if tag_open:
+                    document +=  "    </p>\n"
+                    tag_open = False
                 render_block = Context(context, '_temp_filename = render()')
                 render_block.children.append(child)
                 render_block.evaluate()
                 filename = Context.variables['_temp_filename']
                 if filename is not None:
-                    document += '<br><br><img src="%s" width=500>\n' % filename
+                    document += '    <img src="%s" width=500>\n' % filename
             else:
                 child.evaluate()
+
+    if tag_open:
+        document +=  "    </p>\n"
+        tag_open = False
 
     document += ('</div>\n'
                  '</body>\n'

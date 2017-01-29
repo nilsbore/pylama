@@ -14,11 +14,15 @@ def render_standalone(document, imports, name=None):
     if not os.path.exists(tempdir):
         os.makedirs(tempdir)
 
+    preamble = ""
+    for block, number in BookKeeping.blocks.items():
+        preamble += "\\addtocounter{%s}{%d}" % (block, number)
+    document = preamble + document
+
     mnew = hashlib.md5(document).hexdigest()
     pngfile = os.path.join(tempdir, "%s.png" % name)
     md5file = os.path.join(tempdir, "%s.md5" % name)
     if os.path.exists(md5file):
-        # we also need to check if the ref counters are the same
         with open(md5file) as f:
             mold = f.readline()
         if mnew == mold:
@@ -31,8 +35,6 @@ def render_standalone(document, imports, name=None):
     for imp in imports:
         standalone_document += imp + "\n"
     standalone_document += "\\begin{document}\n"
-    for block, number in BookKeeping.blocks.items():
-        standalone_document += "\\addtocounter{%s}{%d}" % (block, number)
     standalone_document += document
     standalone_document += "\end{document}"
 
@@ -58,9 +60,11 @@ def render(name=None):
     #     print "SUBSECTION!"
     #     if block == 'subsection':
     #         print l, number, BookKeeping.blocks['subsection']
-    BookKeeping.is_used = True
+    is_used = BookKeeping.is_used
+    if not is_used:
+        BookKeeping.is_used = True
     Context.context.add()
-    BookKeeping.is_used = False
+    BookKeeping.is_used = is_used
     if len(Context.document) > 0:
         image_file = render_standalone(Context.document, Context.imports)
     else:
