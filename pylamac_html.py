@@ -10,6 +10,7 @@ import sys
 def html_add(context):
 
     BookKeeping.is_used = True
+    #Context.variables["BookKeeping"] = BookKeeping
 
     document = ('<!doctype html>\n'
                 '<html lang="en">\n'
@@ -17,12 +18,14 @@ def html_add(context):
                 '    <meta charset="UTF-8">\n'
                 '    <title>Test Document</title>\n'
                 '</head>\n'
-                '<body>\n')
+                '<link rel="stylesheet" href="simple.css">\n'
+                '<body class="bodyclass">\n'
+                '<div id="container">\n')
 
     for child in context.children:
         if child.function is None:
             document += '    <p>\n       '
-            document += child.text
+            document += child.text + "\n"
         elif child.inline:
             string_block = Context(context, '_temp_string = string_copy()')
             string_block.children.append(child)
@@ -43,9 +46,10 @@ def html_add(context):
                 render_block.children.append(child)
                 render_block.evaluate()
                 filename = Context.variables['_temp_filename']
-                document += '<img src="%s">\n' % filename
+                document += '<br><br><img src="%s" width=500>\n' % filename
 
-    document += ('</body>\n'
+    document += ('</div>\n'
+                 '</body>\n'
                  '</html>')
 
     with open("simple.html", 'w') as f:
