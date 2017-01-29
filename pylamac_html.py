@@ -31,19 +31,22 @@ def latex_string_to_html(string):
 
     return stdout
 
-def html_add(context):
+def html_add(context, outfile, for_readme=False):
 
     BookKeeping.is_used = True
 
-    document = ('<!doctype html>\n'
-                '<html lang="en">\n'
-                '<head>\n'
-                '    <meta charset="UTF-8">\n'
-                '    <title>Test Document</title>\n'
-                '</head>\n'
-                '<link rel="stylesheet" href="styles/default_latex.css">\n'
-                '<body class="bodyclass">\n'
-                '<div id="container">\n')
+    if for_readme:
+        document = ""
+    else:
+        document = ('<!doctype html>\n'
+                    '<html lang="en">\n'
+                    '<head>\n'
+                    '    <meta charset="UTF-8">\n'
+                    '    <title>Test Document</title>\n'
+                    '</head>\n'
+                    '<link rel="stylesheet" href="styles/default_latex.css">\n'
+                    '<body class="bodyclass">\n'
+                    '<div id="container">\n')
 
     active = False
     tag_open = False
@@ -87,30 +90,34 @@ def html_add(context):
         document += latex_string_to_html(active_paragraph)
         active_paragraph = ""
 
-    document += ('</div>\n'
-                 '</body>\n'
-                 '</html>')
+    if not for_readme:
+        document += ('</div>\n'
+                     '</body>\n'
+                     '</html>')
 
-    with open("simple.html", 'w') as f:
+    with open(outfile, 'w') as f:
         f.write(document.encode('utf8'))
 
 
-def run(infile, outfile):
+def run(infile, texfile, htmlfile):
+
+    for_readme = htmlfile == "README.md"
+
     context = Context(myparent=None, func=None, indent=0)
     with open(infile) as f:
         lines = f.readlines()
         context.parse_buf(lines)
         #context.add()
-        html_add(context)
+        html_add(context, htmlfile, for_readme)
         #context.print_parse_tree()
     context_class = Context.variables["Context"]
     document = context_class.document
 
-    with open(outfile, 'w') as f:
+    with open(texfile, 'w') as f:
         f.write(document)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print "Usage: ./pylamac.py input.pymd output.tex"
+    if len(sys.argv) < 4:
+        print "Usage: ./pylamac.py input.pymd output1.tex output2.html/md"
     else:
-        run(sys.argv[1], sys.argv[2])
+        run(sys.argv[1], sys.argv[2], sys.argv[3])
