@@ -59,7 +59,6 @@ def subfigure(image, caption=None, label=None, placement="t", scale=1.0, width=N
 
     if width is None:
         width = str(1.0/Context.variables['cols']-0.01) + "\\textwidth"
-    print "Subfigure width: " + width
 
     latex("\\begin{subfigure}[%s]{%s}" % (placement, width))
 
