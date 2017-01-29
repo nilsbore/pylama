@@ -22,6 +22,8 @@ def html_add(context):
                 '<body class="bodyclass">\n'
                 '<div id="container">\n')
 
+    active = False
+
     for child in context.children:
         if child.function is None:
             document += '    <p>\n       '
@@ -31,22 +33,35 @@ def html_add(context):
             string_block.children.append(child)
             string_block.evaluate()
             document += '    <p>\n       '
-            print Context.variables
             document += Context.variables['_temp_string']
             document += '</p>'
 
         else:
-            #if "import" in child.function or "documentclass" in child.function:
-            if ("import" in child.function or "documentclass" in child.function) or \
-               ("equation" not in child.function and "table" not in child.function and \
-                "code" not in child.function and "section" not in child.function):
+            #if ("import" in child.function or "documentclass" in child.function) or \
+            #   ("equation" not in child.function and "table" not in child.function and \
+            #    "code" not in child.function and "section" not in child.function):
+
+            if "begin_document" in child.function:
+                active = True
                 child.evaluate()
-            else:
+                if "title" in Context.variables:
+                    document += '<h1 align="center">' + Context.variables["title"] + '</h1>\n'
+                if "author" in Context.variables:
+                    document += '<h3 align="center">' + Context.variables["author"] + '</h3>\n'
+            elif active and "end_document" in child.function:
+                active = False
+                child.evaluate()
+            #elif active and
+            #    child.evaluate()
+            elif active:
                 render_block = Context(context, '_temp_filename = render()')
                 render_block.children.append(child)
                 render_block.evaluate()
                 filename = Context.variables['_temp_filename']
-                document += '<br><br><img src="%s" width=500>\n' % filename
+                if filename is not None:
+                    document += '<br><br><img src="%s" width=500>\n' % filename
+            else:
+                child.evaluate()
 
     document += ('</div>\n'
                  '</body>\n'
